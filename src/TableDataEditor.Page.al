@@ -1,9 +1,8 @@
 page 50102 "Table Data Editor"
 {
-    PageType = List;
-    SourceTable = Integer;
-    SourceTableTemporary = true;
+    ApplicationArea = All;
     Caption = 'Table Data Editor';
+    PageType = List;
     Permissions =
     tabledata "Sales Invoice Header" = rimd,
     tabledata "Sales Invoice Line" = rimd,
@@ -31,6 +30,8 @@ page 50102 "Table Data Editor"
     tabledata "G/L - Item Ledger Relation" = rimd,
     tabledata "Item Ledger Entry" = rimd,
     tabledata "Value Entry" = rimd;
+    SourceTable = Integer;
+    SourceTableTemporary = true;
 
     layout
     {
@@ -40,9 +41,9 @@ page 50102 "Table Data Editor"
             {
                 field(TableID; TableID)
                 {
+                    ApplicationArea = All;
                     Caption = 'Table ID';
                     TableRelation = AllObjWithCaption."Object ID" where("Object Type" = const(TableData));
-                    ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Table ID field.';
                     trigger OnValidate()
                     begin
@@ -53,23 +54,23 @@ page 50102 "Table Data Editor"
                 }
                 field(TableName; GetTableName())
                 {
-                    Caption = 'Table Name';
                     ApplicationArea = All;
+                    Caption = 'Table Name';
                     ToolTip = 'Specifies the value of the Table Name field.';
                 }
 
                 field(RecordCount; RecordCount)
                 {
+                    ApplicationArea = All;
                     Caption = 'Record Count';
                     Editable = false;
-                    ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Record Count field.';
                 }
                 field(CompanyName; CompanyName)
                 {
+                    ApplicationArea = All;
                     Caption = 'Company';
                     TableRelation = Company;
-                    ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Company field.';
                     trigger OnValidate()
                     begin
@@ -81,8 +82,8 @@ page 50102 "Table Data Editor"
                 }
                 field(ValidateFields; ValidateFields)
                 {
-                    Caption = 'Validate';
                     ApplicationArea = All;
+                    Caption = 'Validate';
                     ToolTip = 'Specifies the value of the Validate field.';
                     trigger OnValidate()
                     begin
@@ -91,8 +92,8 @@ page 50102 "Table Data Editor"
                 }
                 field(RunTriggers; RunTriggers)
                 {
-                    Caption = 'Run triggers';
                     ApplicationArea = All;
+                    Caption = 'Run triggers';
                     ToolTip = 'Specifies the value of the Run triggers field.';
                     trigger OnValidate()
                     begin
@@ -104,50 +105,50 @@ page 50102 "Table Data Editor"
             {
                 field(KeyMatrixData1; KeyMatrixData[1])
                 {
+                    ApplicationArea = All;
                     CaptionClass = KeyCaptionData[1];
                     Enabled = false;
-                    Visible = KeyControlVisibility1;
-                    ApplicationArea = All;
                     ToolTip = 'Specifies the value of the KeyMatrixData[1] field.';
+                    Visible = KeyControlVisibility1;
                 }
                 field(KeyMatrixData2; KeyMatrixData[2])
                 {
+                    ApplicationArea = All;
                     CaptionClass = KeyCaptionData[2];
                     Enabled = false;
-                    Visible = KeyControlVisibility2;
-                    ApplicationArea = All;
                     ToolTip = 'Specifies the value of the KeyMatrixData[2] field.';
+                    Visible = KeyControlVisibility2;
                 }
                 field(KeyMatrixData3; KeyMatrixData[3])
                 {
+                    ApplicationArea = All;
                     CaptionClass = KeyCaptionData[3];
                     Enabled = false;
-                    Visible = KeyControlVisibility3;
-                    ApplicationArea = All;
                     ToolTip = 'Specifies the value of the KeyMatrixData[3] field.';
+                    Visible = KeyControlVisibility3;
                 }
                 field(KeyMatrixData4; KeyMatrixData[4])
                 {
+                    ApplicationArea = All;
                     CaptionClass = KeyCaptionData[4];
                     Enabled = false;
-                    Visible = KeyControlVisibility4;
-                    ApplicationArea = All;
                     ToolTip = 'Specifies the value of the KeyMatrixData[4] field.';
+                    Visible = KeyControlVisibility4;
                 }
                 field(KeyMatrixData5; KeyMatrixData[5])
                 {
+                    ApplicationArea = All;
                     CaptionClass = KeyCaptionData[5];
                     Enabled = false;
-                    Visible = KeyControlVisibility5;
-                    ApplicationArea = All;
                     ToolTip = 'Specifies the value of the KeyMatrixData[5] field.';
+                    Visible = KeyControlVisibility5;
                 }
                 field(MatrixData1; MatrixData[GetControlSetNr(1)])
                 {
-                    CaptionClass = CaptionData[GetControlSetNr(1)];
-                    Visible = MatrixDataVisibility1;
                     ApplicationArea = All;
+                    CaptionClass = CaptionData[GetControlSetNr(1)];
                     ToolTip = 'Specifies the value of the MatrixData[GetControlSetNr(1)] field.';
+                    Visible = MatrixDataVisibility1;
                     trigger OnValidate()
                     begin
                         ChangeValues(GetControlSetNr(1));
@@ -160,10 +161,10 @@ page 50102 "Table Data Editor"
                 }
                 field(MatrixData2; MatrixData[GetControlSetNr(2)])
                 {
-                    CaptionClass = CaptionData[GetControlSetNr(2)];
-                    Visible = MatrixDataVisibility2;
                     ApplicationArea = All;
+                    CaptionClass = CaptionData[GetControlSetNr(2)];
                     ToolTip = 'Specifies the value of the MatrixData[GetControlSetNr(2)] field.';
+                    Visible = MatrixDataVisibility2;
                     trigger OnValidate()
                     begin
                         ChangeValues(GetControlSetNr(2));
@@ -176,10 +177,10 @@ page 50102 "Table Data Editor"
                 }
                 field(MatrixData3; MatrixData[GetControlSetNr(3)])
                 {
-                    CaptionClass = CaptionData[GetControlSetNr(3)];
-                    Visible = MatrixDataVisibility3;
                     ApplicationArea = All;
+                    CaptionClass = CaptionData[GetControlSetNr(3)];
                     ToolTip = 'Specifies the value of the MatrixData[GetControlSetNr(3)] field.';
+                    Visible = MatrixDataVisibility3;
                     trigger OnValidate()
                     begin
                         ChangeValues(GetControlSetNr(3));
@@ -192,10 +193,10 @@ page 50102 "Table Data Editor"
                 }
                 field(MatrixData4; MatrixData[GetControlSetNr(4)])
                 {
-                    CaptionClass = CaptionData[GetControlSetNr(4)];
-                    Visible = MatrixDataVisibility4;
                     ApplicationArea = All;
+                    CaptionClass = CaptionData[GetControlSetNr(4)];
                     ToolTip = 'Specifies the value of the MatrixData[GetControlSetNr(4)] field.';
+                    Visible = MatrixDataVisibility4;
                     trigger OnValidate()
                     begin
                         ChangeValues(GetControlSetNr(4));
@@ -208,10 +209,10 @@ page 50102 "Table Data Editor"
                 }
                 field(MatrixData5; MatrixData[GetControlSetNr(5)])
                 {
-                    CaptionClass = CaptionData[GetControlSetNr(5)];
-                    Visible = MatrixDataVisibility5;
                     ApplicationArea = All;
+                    CaptionClass = CaptionData[GetControlSetNr(5)];
                     ToolTip = 'Specifies the value of the MatrixData[GetControlSetNr(5)] field.';
+                    Visible = MatrixDataVisibility5;
                     trigger OnValidate()
                     begin
                         ChangeValues(GetControlSetNr(5));
@@ -224,10 +225,10 @@ page 50102 "Table Data Editor"
                 }
                 field(MatrixData6; MatrixData[GetControlSetNr(6)])
                 {
-                    CaptionClass = CaptionData[GetControlSetNr(6)];
-                    Visible = MatrixDataVisibility6;
                     ApplicationArea = All;
+                    CaptionClass = CaptionData[GetControlSetNr(6)];
                     ToolTip = 'Specifies the value of the MatrixData[GetControlSetNr(6)] field.';
+                    Visible = MatrixDataVisibility6;
                     trigger OnValidate()
                     begin
                         ChangeValues(GetControlSetNr(6));
@@ -240,10 +241,10 @@ page 50102 "Table Data Editor"
                 }
                 field(MatrixData7; MatrixData[GetControlSetNr(7)])
                 {
-                    CaptionClass = CaptionData[GetControlSetNr(7)];
-                    Visible = MatrixDataVisibility7;
                     ApplicationArea = All;
+                    CaptionClass = CaptionData[GetControlSetNr(7)];
                     ToolTip = 'Specifies the value of the MatrixData[GetControlSetNr(7)] field.';
+                    Visible = MatrixDataVisibility7;
                     trigger OnValidate()
                     begin
                         ChangeValues(GetControlSetNr(7));
@@ -257,10 +258,10 @@ page 50102 "Table Data Editor"
 
                 field(MatrixData8; MatrixData[GetControlSetNr(8)])
                 {
-                    CaptionClass = CaptionData[GetControlSetNr(8)];
-                    Visible = MatrixDataVisibility8;
                     ApplicationArea = All;
+                    CaptionClass = CaptionData[GetControlSetNr(8)];
                     ToolTip = 'Specifies the value of the MatrixData[GetControlSetNr(8)] field.';
+                    Visible = MatrixDataVisibility8;
                     trigger OnValidate()
                     begin
                         ChangeValues(GetControlSetNr(8));
@@ -273,10 +274,10 @@ page 50102 "Table Data Editor"
                 }
                 field(MatrixData9; MatrixData[GetControlSetNr(9)])
                 {
-                    CaptionClass = CaptionData[GetControlSetNr(9)];
-                    Visible = MatrixDataVisibility9;
                     ApplicationArea = All;
+                    CaptionClass = CaptionData[GetControlSetNr(9)];
                     ToolTip = 'Specifies the value of the MatrixData[GetControlSetNr(9)] field.';
+                    Visible = MatrixDataVisibility9;
                     trigger OnValidate()
                     begin
                         ChangeValues(GetControlSetNr(9));
@@ -289,10 +290,10 @@ page 50102 "Table Data Editor"
                 }
                 field(MatrixData10; MatrixData[GetControlSetNr(10)])
                 {
-                    CaptionClass = CaptionData[GetControlSetNr(10)];
-                    Visible = MatrixDataVisibility10;
                     ApplicationArea = All;
+                    CaptionClass = CaptionData[GetControlSetNr(10)];
                     ToolTip = 'Specifies the value of the MatrixData[GetControlSetNr(10)] field.';
+                    Visible = MatrixDataVisibility10;
                     trigger OnValidate()
                     begin
                         ChangeValues(GetControlSetNr(10));
@@ -317,8 +318,8 @@ page 50102 "Table Data Editor"
         {
             action(FirstSet)
             {
-                Caption = 'First Set';
                 ApplicationArea = All;
+                Caption = 'First Set';
                 Image = PreviousSet;
                 ToolTip = 'Executes the First Set action.';
                 trigger OnAction()
@@ -328,8 +329,8 @@ page 50102 "Table Data Editor"
             }
             action(PrevSet)
             {
-                Caption = 'Previous Set';
                 ApplicationArea = All;
+                Caption = 'Previous Set';
                 Image = PreviousRecord;
                 ToolTip = 'Executes the Previous Set action.';
                 trigger OnAction();
@@ -339,8 +340,8 @@ page 50102 "Table Data Editor"
             }
             action(NextSet)
             {
-                Caption = 'Next Set';
                 ApplicationArea = All;
+                Caption = 'Next Set';
                 Image = NextRecord;
                 ToolTip = 'Executes the Next Set action.';
                 trigger OnAction();
@@ -350,8 +351,8 @@ page 50102 "Table Data Editor"
             }
             action(LastSet)
             {
-                Caption = 'Last Set';
                 ApplicationArea = All;
+                Caption = 'Last Set';
                 Image = NextSet;
                 ToolTip = 'Executes the Last Set action.';
                 trigger OnAction()
@@ -361,8 +362,8 @@ page 50102 "Table Data Editor"
             }
             action(TableFilters)
             {
-                Caption = 'Table Filters';
                 ApplicationArea = All;
+                Caption = 'Table Filters';
                 Image = EditFilter;
                 ToolTip = 'Executes the Table Filters action.';
                 trigger OnAction()
@@ -372,8 +373,8 @@ page 50102 "Table Data Editor"
             }
             action(FieldsSelection)
             {
-                Caption = 'Fields Selection';
                 ApplicationArea = All;
+                Caption = 'Fields Selection';
                 Image = SelectField;
                 ToolTip = 'Executes the Fields Selection action.';
                 trigger OnAction()
@@ -383,8 +384,8 @@ page 50102 "Table Data Editor"
             }
             action(ResetPage)
             {
-                Caption = 'Reset Page';
                 ApplicationArea = All;
+                Caption = 'Reset Page';
                 Image = ClearFilter;
                 ToolTip = 'Executes the Reset Page action.';
                 trigger OnAction()
@@ -394,8 +395,8 @@ page 50102 "Table Data Editor"
             }
             Action(OpenRec)
             {
-                Caption = 'Open Record';
                 ApplicationArea = All;
+                Caption = 'Open Record';
                 Image = ViewPage;
                 Scope = Repeater;
                 ToolTip = 'Executes the Open Record action.';
@@ -406,8 +407,8 @@ page 50102 "Table Data Editor"
             }
             action(SelectKey)
             {
-                Caption = 'Select Sorting Key';
                 ApplicationArea = All;
+                Caption = 'Select Sorting Key';
                 Image = EncryptionKeys;
                 ToolTip = 'Executes the Select Sorting Key action.';
                 trigger OnAction()
@@ -417,8 +418,8 @@ page 50102 "Table Data Editor"
             }
             action(ExportToExcelCtrl)
             {
-                Caption = 'Export To Excel';
                 ApplicationArea = All;
+                Caption = 'Export To Excel';
                 Image = ExportToExcel;
                 ToolTip = 'Executes the Export To Excel action.';
                 trigger OnAction()
@@ -428,8 +429,8 @@ page 50102 "Table Data Editor"
             }
             action(DeleteAll)
             {
-                Caption = 'Delete All';
                 ApplicationArea = all;
+                Caption = 'Delete All';
                 Image = DeleteAllBreakpoints;
                 ToolTip = 'Executes the Delete All action.';
                 trigger OnAction()

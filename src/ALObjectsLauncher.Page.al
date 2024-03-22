@@ -1,14 +1,14 @@
 page 50100 "AL Objects Launcher"
 {
-    PageType = List;
     ApplicationArea = All;
-    UsageCategory = Lists;
-    SourceTable = "AllObjWithCaption";
     Caption = 'AL Objects Launcher';
     DeleteAllowed = false;
     InsertAllowed = false;
     ModifyAllowed = false;
+    PageType = List;
     ShowFilter = false;
+    SourceTable = "AllObjWithCaption";
+    UsageCategory = Lists;
 
     layout
     {
@@ -18,8 +18,8 @@ page 50100 "AL Objects Launcher"
             {
                 field(ObjectType; ObjectType)
                 {
-                    Caption = 'Object Type';
                     ApplicationArea = All;
+                    Caption = 'Object Type';
                     ToolTip = 'Specifies the value of the Object Type field.';
                     trigger OnValidate()
                     begin
@@ -32,8 +32,8 @@ page 50100 "AL Objects Launcher"
                 field("Object Type"; Rec."Object Type")
                 {
                     ApplicationArea = all;
-                    Visible = false;
                     ToolTip = 'Specifies the object type.';
+                    Visible = false;
                 }
                 field("Object ID"; Rec."Object ID")
                 {
@@ -71,6 +71,7 @@ page 50100 "AL Objects Launcher"
             action(Open)
             {
                 ApplicationArea = All;
+                Caption = 'Open';
                 Image = Open;
                 ShortcutKey = Return;
                 ToolTip = 'Executes the Open action.';
@@ -79,12 +80,38 @@ page 50100 "AL Objects Launcher"
                     OpenObject();
                 end;
             }
+            action(Fields)
+            {
+                ApplicationArea = all;
+                Caption = 'Fields';
+                Image = Accounts;
+                RunObject = page "Fields Lookup";
+                RunPageLink = TableNo = field("Object ID");
+                Visible = ObjectType = ObjectType::Table;
+            }
+            action(PublishedEvents)
+            {
+                ApplicationArea = all;
+                Caption = 'Published Events';
+                Image = "Event";
+
+                trigger OnAction()
+                begin
+                    LaunchPublishedEvents();
+                end;
+            }
         }
         area(Promoted)
         {
             group(Category_Process)
             {
                 actionref(Open_Promoted; Open)
+                {
+                }
+                actionref(Fields_Promoted; Fields)
+                {
+                }
+                actionref(PublishedEvents_Promoted; PublishedEvents)
                 {
                 }
             }
@@ -138,6 +165,24 @@ page 50100 "AL Objects Launcher"
         NAVAppInstalledApp.SetRange("Package ID", Rec."App Package ID");
         if NAVAppInstalledApp.FindFirst() then
             exit(NAVAppInstalledApp.Name);
+    end;
+
+    local procedure LaunchPublishedEvents()
+    var
+        EventSubscription: Record "Event Subscription";
+    begin
+        case ObjectType of
+            ObjectType::Table:
+                EventSubscription.SetRange("Publisher Object Type", EventSubscription."Publisher Object Type"::Table);
+            ObjectType::Page:
+                EventSubscription.SetRange("Publisher Object Type", EventSubscription."Publisher Object Type"::Page);
+            ObjectType::Report:
+                EventSubscription.SetRange("Publisher Object Type", EventSubscription."Publisher Object Type"::Report);
+            ObjectType::Codeunit:
+                EventSubscription.SetRange("Publisher Object Type", EventSubscription."Publisher Object Type"::Codeunit);
+        end;
+        EventSubscription.SetRange("Publisher Object ID", Rec."Object ID");
+        page.Run(page::"Event Subscriptions", EventSubscription);
     end;
 
     var
