@@ -1,9 +1,10 @@
 page 50101 "Sorting keys"
 {
+    ApplicationArea = All;
+    Caption = 'Sorting keys';
     PageType = List;
     SourceTable = Key;
     SourceTableTemporary = true;
-    Caption = 'Sorting keys';
 
     layout
     {
@@ -23,26 +24,10 @@ page 50101 "Sorting keys"
                 }
                 field(Descending; Rec.Unique)
                 {
-                    Caption = 'Descending';
                     ApplicationArea = All;
+                    Caption = 'Descending';
                     ToolTip = 'Specifies the value of the Descending field.';
                 }
-            }
-        }
-    }
-
-    actions
-    {
-        area(Processing)
-        {
-            action(ActionName)
-            {
-                ApplicationArea = All;
-                ToolTip = 'Executes the ActionName action.';
-                trigger OnAction();
-                begin
-
-                end;
             }
         }
     }
