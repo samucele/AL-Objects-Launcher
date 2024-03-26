@@ -1,3 +1,23 @@
+namespace ObjectLauncher.DataEditor;
+
+using Microsoft.Sales.History;
+using Microsoft.Purchases.History;
+using Microsoft.Finance.GeneralLedger.Ledger;
+using Microsoft.Sales.Receivables;
+using Microsoft.Purchases.Payables;
+using Microsoft.Finance.VAT.Ledger;
+using Microsoft.Finance.ReceivablesPayables;
+using Microsoft.Inventory.Costing;
+using Microsoft.Inventory.Ledger;
+using System.Utilities;
+using System.Reflection;
+using System.Environment;
+using System.Globalization;
+using System.Text;
+using System.IO;
+using System.DateTime;
+using ObjectLauncher.SortingKey;
+
 page 50102 "Table Data Editor"
 {
     ApplicationArea = All;
@@ -458,13 +478,16 @@ page 50102 "Table Data Editor"
                 actionref(TableFilters_Promoted; TableFilters)
                 {
                 }
-                actionref(FieldsSelection_Promoted; FieldsSelection)
-                {
-                }
                 actionref(ResetPage_Promoted; ResetPage)
                 {
                 }
-                actionref(OpenRec_Promoted; OpenRec)
+            }
+            group(Functions)
+            {
+                Caption = 'Functions';
+                Image = Action;
+
+                actionref(FieldsSelection_Promoted; FieldsSelection)
                 {
                 }
                 actionref(SelectKey_Promoted; SelectKey)

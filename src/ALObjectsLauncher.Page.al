@@ -1,3 +1,10 @@
+namespace ObjectLauncher.ObjectLauncher;
+
+using System.Reflection;
+using System.Apps;
+using System.Environment;
+using ObjectLauncher.DataEditor;
+
 page 50100 "AL Objects Launcher"
 {
     ApplicationArea = All;

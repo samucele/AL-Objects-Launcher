@@ -1,3 +1,7 @@
+namespace ObjectLauncher.SortingKey;
+
+using System.Reflection;
+
 page 50101 "Sorting keys"
 {
     ApplicationArea = All;
