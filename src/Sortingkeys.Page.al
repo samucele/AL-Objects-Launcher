@@ -92,6 +92,6 @@ page 50101 "Sorting keys"
     end;
 
     var
-        GlobalTableID: Integer;
         TempSelectedKey: record "Key" temporary;
+        GlobalTableID: Integer;
 }

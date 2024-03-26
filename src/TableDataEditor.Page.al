@@ -592,11 +592,11 @@ page 50102 "Table Data Editor"
     local procedure LoadValues()
     var
         Field: Record "Field";
+        RecID: RecordId;
+        RecRef: RecordRef;
+        fRef: FieldRef;
         Iter: Integer;
         KeyIter: Integer;
-        fRef: FieldRef;
-        RecRef: RecordRef;
-        RecID: RecordId;
     begin
         Clear(MatrixData);
         Clear(KeyMatrixData);
@@ -665,15 +665,15 @@ page 50102 "Table Data Editor"
 
     local procedure ChangeValues(iter: Integer)
     var
+        Field: Record Field;
+        DotNet_CultureInfo: codeunit "DotNet_CultureInfo";
+        TypeHelper: Codeunit "Type Helper";
         RecRef: recordref;
         fRef: FieldRef;
-        Value: Variant;
-        Field: Record Field;
-        TypeHelper: Codeunit "Type Helper";
-        DotNet_CultureInfo: codeunit "DotNet_CultureInfo";
+        IsHandled: Boolean;
         RecExists: Boolean;
         OldValue: Variant;
-        IsHandled: Boolean;
+        Value: Variant;
     begin
         RecExists := GetRecRef(RecRef);
         GetfRef(fRef, RecRef, iter);
@@ -723,15 +723,15 @@ page 50102 "Table Data Editor"
 
     local procedure RenameRecRef(var RecRef: RecordRef; var fRefPKey: FieldRef; OldValue: Variant)
     var
-        fRef: FieldRef;
         Field: Record "Field";
+        fRef: FieldRef;
+        IsHandled: Boolean;
+        Iter: Integer;
         Var1: Variant;
         Var2: Variant;
         Var3: Variant;
         Var4: Variant;
         Var5: Variant;
-        Iter: Integer;
-        IsHandled: Boolean;
     begin
         GetFilteredField(Field);
         Field.SetRange(IsPartOfPrimaryKey, true);
@@ -860,11 +860,11 @@ page 50102 "Table Data Editor"
 
     local procedure FieldOptionLookup(iter: Integer)
     var
+        TypeHelper: Codeunit "Type Helper";
         RecRef: RecordRef;
         fRef: FieldRef;
-        Return: Integer;
-        TypeHelper: Codeunit "Type Helper";
         DefaultNumber: Integer;
+        Return: Integer;
     begin
         GetRecRef(RecRef);
         GetfRef(fRef, RecRef, iter);
@@ -880,11 +880,11 @@ page 50102 "Table Data Editor"
     local procedure FieldRelationLoolup(iter: Integer; var TableRelationsMetadata: Record "Table Relations Metadata")
     var
         RecRef: RecordRef;
-        fRef: FieldRef;
         RelationRecRef: RecordRef;
+        fRef: FieldRef;
         RelationfRef: FieldRef;
-        VariantRec: Variant;
         Return: Action;
+        VariantRec: Variant;
     begin
         GetRecRef(RecRef);
         GetfRef(fRef, RecRef, iter);
@@ -975,8 +975,8 @@ page 50102 "Table Data Editor"
 
     local procedure OpenFieldsSelection()
     var
-        FieldsLookup: Page "Fields Lookup";
         Field: Record "Field";
+        FieldsLookup: Page "Fields Lookup";
         Return: Action;
     begin
         GetFilteredField(Field);
@@ -1022,11 +1022,11 @@ page 50102 "Table Data Editor"
 
     local procedure OpenPageRecord()
     var
-        RecRef: RecordRef;
-        VariantRec: Variant;
-        ConfigManagement: Codeunit "Config. Management";
-        PageID: Integer;
         PageMetadata: Record "Page Metadata";
+        ConfigManagement: Codeunit "Config. Management";
+        RecRef: RecordRef;
+        PageID: Integer;
+        VariantRec: Variant;
     begin
         GetRecRef(RecRef);
         VariantRec := RecRef;
@@ -1041,13 +1041,13 @@ page 50102 "Table Data Editor"
 
     local procedure FieldDateLookup(iter: Integer; var Field: Record Field)
     var
+        DotNet_CultureInfo: codeunit "DotNet_CultureInfo";
+        TypeHelper: Codeunit "Type Helper";
         DateTimeDialog: Page "Date-Time Dialog";
+        Return: Action;
         Date: date;
         DateTime: DateTime;
-        TypeHelper: Codeunit "Type Helper";
-        DotNet_CultureInfo: codeunit "DotNet_CultureInfo";
         Variant: Variant;
-        Return: Action;
     begin
         case field.Type of
             field.Type::Date:
@@ -1077,9 +1077,9 @@ page 50102 "Table Data Editor"
 
     local procedure FieldBooleanLookup(iter: Integer)
     var
-        Options: Label 'Yes,No';
-        Return: Integer;
         Default: Integer;
+        Return: Integer;
+        Options: Label 'Yes,No';
     begin
         if EvaluateBoolean(iter) = true then
             Default := 1
@@ -1134,9 +1134,9 @@ page 50102 "Table Data Editor"
     local procedure ExportToExcel()
     var
         ExcelBuffer: Record "Excel Buffer" temporary;
-        Iter: Integer;
         Field: record Field;
         RecRef: RecordRef;
+        Iter: Integer;
     begin
         RecRef.Open(TableID);
         for Iter := 1 to RecRef.FieldCount do
@@ -1201,18 +1201,10 @@ page 50102 "Table Data Editor"
     end;
 
     var
-        CompanyName: Text;
-        TableID: Integer;
-        MatrixData: array[500] of Text;
-        CaptionData: array[500] of Text;
-        KeyMatrixData: array[10] of text;
-        KeyCaptionData: array[10] of text;
-        RecDictionary: Dictionary of [Integer, RecordId];
-        FieldDictionary: Dictionary of [Integer, Integer];
-        ValidateFields: Boolean;
-        RunTriggers: Boolean;
-        MatrixSetNr: Integer;
-        RecordCount: Integer;
+        TempSelectedField: record Field temporary;
+        TempKeys: record "Key" temporary;
+        TempSelectedKey: record "Key" temporary;
+        TempTableFilter: Record "Table Filter" temporary;
         KeyControlVisibility1: Boolean;
         KeyControlVisibility2: Boolean;
         KeyControlVisibility3: Boolean;
@@ -1228,10 +1220,18 @@ page 50102 "Table Data Editor"
         MatrixDataVisibility8: Boolean;
         MatrixDataVisibility9: Boolean;
         MatrixDataVisibility10: Boolean;
-        TempTableFilter: Record "Table Filter" temporary;
-        TableFiltersText: Text;
-        TempSelectedField: record Field temporary;
-        TempKeys: record "Key" temporary;
-        TempSelectedKey: record "Key" temporary;
+        RunTriggers: Boolean;
+        ValidateFields: Boolean;
+        FieldDictionary: Dictionary of [Integer, Integer];
+        RecDictionary: Dictionary of [Integer, RecordId];
+        MatrixSetNr: Integer;
+        RecordCount: Integer;
+        TableID: Integer;
         OperationType: Option Insert,Modify,Delete,Rename;
+        CaptionData: array[500] of Text;
+        CompanyName: Text;
+        KeyCaptionData: array[10] of text;
+        KeyMatrixData: array[10] of text;
+        MatrixData: array[500] of Text;
+        TableFiltersText: Text;
 }
