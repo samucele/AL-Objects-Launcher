@@ -1,4 +1,4 @@
-namespace ObjectLauncher.DataEditor;
+namespace SamueleCelebron.ObjectLauncher;
 
 using Microsoft.Sales.History;
 using Microsoft.Purchases.History;
@@ -16,7 +16,6 @@ using System.Globalization;
 using System.Text;
 using System.IO;
 using System.DateTime;
-using ObjectLauncher.SortingKey;
 
 page 50102 "Table Data Editor"
 {
