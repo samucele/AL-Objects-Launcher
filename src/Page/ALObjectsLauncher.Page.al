@@ -1,9 +1,8 @@
-namespace ObjectLauncher.ObjectLauncher;
+namespace SamueleCelebron.ObjectLauncher;
 
 using System.Reflection;
 using System.Apps;
 using System.Environment;
-using ObjectLauncher.DataEditor;
 
 page 50100 "AL Objects Launcher"
 {

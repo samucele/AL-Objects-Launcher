@@ -1,4 +1,4 @@
-namespace ObjectLauncher.SortingKey;
+namespace SamueleCelebron.ObjectLauncher;
 
 using System.Reflection;
 
