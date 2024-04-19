@@ -387,7 +387,7 @@ page 50102 "Table Data Editor"
                 ToolTip = 'Executes the Table Filters action.';
                 trigger OnAction()
                 begin
-                    OpenFilters();
+                    OpenFilters(true);
                 end;
             }
             action(FieldsSelection)
@@ -927,23 +927,30 @@ page 50102 "Table Data Editor"
 
     local procedure CheckRelationsCondition(var TableRelationsMetadata: Record "Table Relations Metadata"; var RecRef: RecordRef)
     var
+        Field: record Field;
         ConditionfRef: FieldRef;
+        ConditionfRefValue: Text;
+        TypeHelper: Codeunit "Type Helper";
     begin
         if TableRelationsMetadata.Count = 1 then
             exit;
 
         repeat
+            Field.Get(TableID, TableRelationsMetadata."Condition Field No.");
             ConditionfRef := RecRef.Field(TableRelationsMetadata."Condition Field No.");
+            ConditionfRefValue := Format(ConditionfRef.Value);
+            if Field.Type = Field.Type::Option then
+                ConditionfRefValue := format(TypeHelper.GetOptionNo(ConditionfRefValue, ConditionfRef.OptionMembers));
 
             case TableRelationsMetadata."Condition Type" of
                 TableRelationsMetadata."Condition Type"::CONST:
-                    if format(ConditionfRef.Value) = TableRelationsMetadata."Condition Value" then
+                    if ConditionfRefValue = TableRelationsMetadata."Condition Value" then
                         exit;
             end;
         until TableRelationsMetadata.Next() = 0;
     end;
 
-    local procedure OpenFilters()
+    procedure OpenFilters(LoadRecords: Boolean)
     var
         TableFilter: Page "Table Filter";
     begin
