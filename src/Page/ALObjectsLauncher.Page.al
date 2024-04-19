@@ -52,7 +52,7 @@ page 50100 "AL Objects Launcher"
                     ToolTip = 'Specifies the name of the object.';
                     trigger OnDrillDown()
                     begin
-                        OpenObject();
+                        OpenObject(false);
                     end;
                 }
                 field("Object Caption"; Rec."Object Caption")
@@ -83,7 +83,19 @@ page 50100 "AL Objects Launcher"
                 ToolTip = 'Executes the Open action.';
                 trigger OnAction();
                 begin
-                    OpenObject();
+                    OpenObject(false);
+                end;
+            }
+            action(OpenWithFilters)
+            {
+                ApplicationArea = All;
+                Caption = 'Open With Filters';
+                Image = FilterLines;
+                ShortcutKey = Return;
+                ToolTip = 'Executes the Open With Filters action.';
+                trigger OnAction();
+                begin
+                    OpenObject(true);
                 end;
             }
             action(Fields)
@@ -129,7 +141,7 @@ page 50100 "AL Objects Launcher"
         FilterType();
     end;
 
-    local procedure OpenObject()
+    local procedure OpenObject(WithFilters: Boolean)
     var
         TableDataEditor: Page "Table Data Editor";
     begin
@@ -143,6 +155,8 @@ page 50100 "AL Objects Launcher"
             Rec."Object Type"::Table, Rec."Object Type"::TableData:
                 begin
                     TableDataEditor.SetTableID(Rec."Object ID");
+                    if WithFilters then
+                        TableDataEditor.OpenFilters(true);
                     TableDataEditor.RunModal();
                 end;
         end;
