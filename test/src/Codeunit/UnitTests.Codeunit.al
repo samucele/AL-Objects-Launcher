@@ -1,14 +1,15 @@
 namespace SamueleCelebron.ObjectLauncher;
 
 using System.Reflection;
+using System.TestLibraries.Utilities;
 
-codeunit 50110 "Unit Tests"
+codeunit 50110 "Obj. Launcher Unit Tests"
 {
     Subtype = Test;
     TestPermissions = NonRestrictive;
 
     var
-        TestAssert: Codeunit "Test Assert";
+        LibraryAssert: Codeunit "Library Assert";
 
     #region TableDataManager Tests
 
@@ -21,7 +22,7 @@ codeunit 50110 "Unit Tests"
         TableDataManager.Initialize(18, CompanyName);
 
         // Assert
-        TestAssert.IsTrue(TableDataManager.GetReadOnlyMode(), 'ReadOnlyMode should be true after Initialize');
+        LibraryAssert.IsTrue(TableDataManager.GetReadOnlyMode(), 'ReadOnlyMode should be true after Initialize');
     end;
 
     [Test]
@@ -33,7 +34,7 @@ codeunit 50110 "Unit Tests"
         TableDataManager.Initialize(18, CompanyName);
 
         // Assert
-        TestAssert.IsTrue(TableDataManager.GetValidateFields(), 'ValidateFields should be true after Initialize');
+        LibraryAssert.IsTrue(TableDataManager.GetValidateFields(), 'ValidateFields should be true after Initialize');
     end;
 
     [Test]
@@ -45,7 +46,7 @@ codeunit 50110 "Unit Tests"
         TableDataManager.Initialize(18, CompanyName);
 
         // Assert
-        TestAssert.IsTrue(TableDataManager.GetRunTriggers(), 'RunTriggers should be true after Initialize');
+        LibraryAssert.IsTrue(TableDataManager.GetRunTriggers(), 'RunTriggers should be true after Initialize');
     end;
 
     [Test]
@@ -62,7 +63,7 @@ codeunit 50110 "Unit Tests"
         TableDataManager.SetTableNumber(ExpectedTableNumber);
 
         // Assert
-        TestAssert.AreEqual(ExpectedTableNumber, TableDataManager.GetTableNumber(), 'GetTableNumber should return the set table number');
+        LibraryAssert.AreEqual(ExpectedTableNumber, TableDataManager.GetTableNumber(), 'GetTableNumber should return the set table number');
     end;
 
     [Test]
@@ -79,7 +80,7 @@ codeunit 50110 "Unit Tests"
         TableDataManager.SetCompanyName(ExpectedCompanyName);
 
         // Assert
-        TestAssert.AreEqual(ExpectedCompanyName, TableDataManager.GetCompanyName(), 'GetCompanyName should return the set company name');
+        LibraryAssert.AreEqual(ExpectedCompanyName, TableDataManager.GetCompanyName(), 'GetCompanyName should return the set company name');
     end;
 
     [Test]
@@ -94,7 +95,7 @@ codeunit 50110 "Unit Tests"
         TableDataManager.SetValidateFields(false);
 
         // Assert
-        TestAssert.IsFalse(TableDataManager.GetValidateFields(), 'GetValidateFields should return false after setting to false');
+        LibraryAssert.IsFalse(TableDataManager.GetValidateFields(), 'GetValidateFields should return false after setting to false');
     end;
 
     [Test]
@@ -109,7 +110,7 @@ codeunit 50110 "Unit Tests"
         TableDataManager.SetRunTriggers(false);
 
         // Assert
-        TestAssert.IsFalse(TableDataManager.GetRunTriggers(), 'GetRunTriggers should return false after setting to false');
+        LibraryAssert.IsFalse(TableDataManager.GetRunTriggers(), 'GetRunTriggers should return false after setting to false');
     end;
 
     [Test]
@@ -124,7 +125,7 @@ codeunit 50110 "Unit Tests"
         TableDataManager.SetReadOnlyMode(false);
 
         // Assert
-        TestAssert.IsFalse(TableDataManager.GetReadOnlyMode(), 'GetReadOnlyMode should return false after setting to false');
+        LibraryAssert.IsFalse(TableDataManager.GetReadOnlyMode(), 'GetReadOnlyMode should return false after setting to false');
     end;
 
     [Test]
@@ -140,7 +141,7 @@ codeunit 50110 "Unit Tests"
         Result := TableDataManager.GetControlSetNumber(1);
 
         // Assert
-        TestAssert.AreEqual(1, Result, 'GetControlSetNumber should return 1 for column set 0 position 1');
+        LibraryAssert.AreEqual(1, Result, 'GetControlSetNumber should return 1 for column set 0 position 1');
     end;
 
     [Test]
@@ -161,7 +162,7 @@ codeunit 50110 "Unit Tests"
         Result := TableDataManager.GetControlSetNumber(5);
 
         // Assert
-        TestAssert.AreEqual(25, Result, 'GetControlSetNumber should return 25 for column set 2 position 5 (2*10+5)');
+        LibraryAssert.AreEqual(25, Result, 'GetControlSetNumber should return 25 for column set 2 position 5 (2*10+5)');
     end;
 
     [Test]
@@ -181,7 +182,7 @@ codeunit 50110 "Unit Tests"
         TableDataManager.MoveToFirstColumnSet();
 
         // Assert
-        TestAssert.AreEqual(1, TableDataManager.GetControlSetNumber(1), 'GetControlSetNumber(1) should return 1 after MoveToFirstColumnSet');
+        LibraryAssert.AreEqual(1, TableDataManager.GetControlSetNumber(1), 'GetControlSetNumber(1) should return 1 after MoveToFirstColumnSet');
     end;
 
     [Test]
@@ -197,7 +198,7 @@ codeunit 50110 "Unit Tests"
         Result := TableDataManager.MoveToPreviousColumnSet();
 
         // Assert
-        TestAssert.IsFalse(Result, 'MoveToPreviousColumnSet should return false when already at column set 0');
+        LibraryAssert.IsFalse(Result, 'MoveToPreviousColumnSet should return false when already at column set 0');
     end;
 
     [Test]
@@ -217,8 +218,8 @@ codeunit 50110 "Unit Tests"
         Result := TableDataManager.MoveToPreviousColumnSet();
 
         // Assert
-        TestAssert.IsTrue(Result, 'MoveToPreviousColumnSet should return true when moving from column set 1');
-        TestAssert.AreEqual(1, TableDataManager.GetControlSetNumber(1), 'Should be back at column set 0');
+        LibraryAssert.IsTrue(Result, 'MoveToPreviousColumnSet should return true when moving from column set 1');
+        LibraryAssert.AreEqual(1, TableDataManager.GetControlSetNumber(1), 'Should be back at column set 0');
     end;
 
     [Test]
@@ -234,7 +235,7 @@ codeunit 50110 "Unit Tests"
         Result := TableDataManager.GetMaxFieldCount();
 
         // Assert
-        TestAssert.AreEqual(500, Result, 'GetMaxFieldCount should return 500');
+        LibraryAssert.AreEqual(500, Result, 'GetMaxFieldCount should return 500');
     end;
 
     [Test]
@@ -250,7 +251,7 @@ codeunit 50110 "Unit Tests"
         Result := TableDataManager.GetColumnsPerPage();
 
         // Assert
-        TestAssert.AreEqual(10, Result, 'GetColumnsPerPage should return 10');
+        LibraryAssert.AreEqual(10, Result, 'GetColumnsPerPage should return 10');
     end;
 
     [Test]
@@ -266,7 +267,7 @@ codeunit 50110 "Unit Tests"
         Result := TableDataManager.GetMaxPrimaryKeyFields();
 
         // Assert
-        TestAssert.AreEqual(5, Result, 'GetMaxPrimaryKeyFields should return 5');
+        LibraryAssert.AreEqual(5, Result, 'GetMaxPrimaryKeyFields should return 5');
     end;
 
     [Test]
@@ -282,8 +283,8 @@ codeunit 50110 "Unit Tests"
         Result := TableDataManager.GetTableCaption();
 
         // Assert
-        TestAssert.IsTrue(Result <> '', 'GetTableCaption should return a non-empty caption for Customer table');
-        TestAssert.IsTrue(StrPos(Result, 'Customer') > 0, 'Caption should contain "Customer"');
+        LibraryAssert.IsTrue(Result <> '', 'GetTableCaption should return a non-empty caption for Customer table');
+        LibraryAssert.IsTrue(StrPos(Result, 'Customer') > 0, 'Caption should contain "Customer"');
     end;
 
     [Test]
@@ -299,7 +300,7 @@ codeunit 50110 "Unit Tests"
         Result := TableDataManager.IsSensitiveTable();
 
         // Assert
-        TestAssert.IsTrue(Result, 'IsSensitiveTable should return true for G/L Entry table (17)');
+        LibraryAssert.IsTrue(Result, 'IsSensitiveTable should return true for G/L Entry table (17)');
     end;
 
     [Test]
@@ -315,7 +316,7 @@ codeunit 50110 "Unit Tests"
         Result := TableDataManager.IsSensitiveTable();
 
         // Assert
-        TestAssert.IsFalse(Result, 'IsSensitiveTable should return false for Customer table (18)');
+        LibraryAssert.IsFalse(Result, 'IsSensitiveTable should return false for Customer table (18)');
     end;
 
     [Test]
@@ -331,7 +332,7 @@ codeunit 50110 "Unit Tests"
         Result := TableDataManager.IsSensitiveTable();
 
         // Assert
-        TestAssert.IsTrue(Result, 'IsSensitiveTable should return true for Cust. Ledger Entry table (21)');
+        LibraryAssert.IsTrue(Result, 'IsSensitiveTable should return true for Cust. Ledger Entry table (21)');
     end;
 
     [Test]
@@ -347,7 +348,7 @@ codeunit 50110 "Unit Tests"
         Result := TableDataManager.IsSensitiveTable();
 
         // Assert
-        TestAssert.IsTrue(Result, 'IsSensitiveTable should return true for VAT Entry table (254)');
+        LibraryAssert.IsTrue(Result, 'IsSensitiveTable should return true for VAT Entry table (254)');
     end;
 
     #endregion
@@ -364,7 +365,7 @@ codeunit 50110 "Unit Tests"
         Result := FieldValueHandler.EvaluateBooleanText('Yes');
 
         // Assert
-        TestAssert.IsTrue(Result, 'EvaluateBooleanText should return true for "Yes"');
+        LibraryAssert.IsTrue(Result, 'EvaluateBooleanText should return true for "Yes"');
     end;
 
     [Test]
@@ -377,7 +378,7 @@ codeunit 50110 "Unit Tests"
         Result := FieldValueHandler.EvaluateBooleanText('No');
 
         // Assert
-        TestAssert.IsFalse(Result, 'EvaluateBooleanText should return false for "No"');
+        LibraryAssert.IsFalse(Result, 'EvaluateBooleanText should return false for "No"');
     end;
 
     [Test]
@@ -390,7 +391,7 @@ codeunit 50110 "Unit Tests"
         Result := FieldValueHandler.EvaluateBooleanText('');
 
         // Assert
-        TestAssert.IsFalse(Result, 'EvaluateBooleanText should return false for empty string');
+        LibraryAssert.IsFalse(Result, 'EvaluateBooleanText should return false for empty string');
     end;
 
     [Test]
@@ -403,7 +404,7 @@ codeunit 50110 "Unit Tests"
         Result := FieldValueHandler.EvaluateBooleanText('true');
 
         // Assert
-        TestAssert.IsTrue(Result, 'EvaluateBooleanText should return true for "true"');
+        LibraryAssert.IsTrue(Result, 'EvaluateBooleanText should return true for "true"');
     end;
 
     [Test]
@@ -416,7 +417,7 @@ codeunit 50110 "Unit Tests"
         Result := FieldValueHandler.EvaluateBooleanText('false');
 
         // Assert
-        TestAssert.IsFalse(Result, 'EvaluateBooleanText should return false for "false"');
+        LibraryAssert.IsFalse(Result, 'EvaluateBooleanText should return false for "false"');
     end;
 
     [Test]
@@ -437,7 +438,7 @@ codeunit 50110 "Unit Tests"
         // Arrange - Field "Balance (LCY)" in Customer table (18) is a FlowField
         // Act & Assert
         asserterror FieldValueHandler.ValidateFieldEditable(18, 60); // Field 60 = Balance (LCY), a FlowField
-        TestAssert.ExpectedError('is a FlowField and cannot be edited directly');
+        LibraryAssert.ExpectedError('is a FlowField and cannot be edited directly');
     end;
 
     [Test]
@@ -452,7 +453,7 @@ codeunit 50110 "Unit Tests"
         Result := FieldValueHandler.HasTableRelation(18, 21, TableRelationsMetadata); // Field 21 = Currency Code
 
         // Assert
-        TestAssert.IsTrue(Result, 'HasTableRelation should return true for Customer."Currency Code"');
+        LibraryAssert.IsTrue(Result, 'HasTableRelation should return true for Customer."Currency Code"');
     end;
 
     [Test]
@@ -467,7 +468,7 @@ codeunit 50110 "Unit Tests"
         Result := FieldValueHandler.HasTableRelation(18, 2, TableRelationsMetadata); // Field 2 = Name
 
         // Assert
-        TestAssert.IsFalse(Result, 'HasTableRelation should return false for Customer.Name');
+        LibraryAssert.IsFalse(Result, 'HasTableRelation should return false for Customer.Name');
     end;
 
     [Test]
@@ -482,7 +483,7 @@ codeunit 50110 "Unit Tests"
         Result := FieldValueHandler.HasTableRelation(18, 27, TableRelationsMetadata); // Field 27 = Payment Terms Code
 
         // Assert
-        TestAssert.IsTrue(Result, 'HasTableRelation should return true for Customer."Payment Terms Code"');
+        LibraryAssert.IsTrue(Result, 'HasTableRelation should return true for Customer."Payment Terms Code"');
     end;
 
     #endregion
@@ -496,7 +497,7 @@ codeunit 50110 "Unit Tests"
     begin
         // Arrange & Act & Assert
         asserterror RecordWriter.GuardReadOnlyMode(true);
-        TestAssert.ExpectedError('Cannot perform write operations in read-only mode');
+        LibraryAssert.ExpectedError('Cannot perform write operations in read-only mode');
     end;
 
     [Test]
@@ -521,7 +522,7 @@ codeunit 50110 "Unit Tests"
 
         // Act & Assert
         asserterror RecordWriter.ModifyRecord(RecordReference, true, true);
-        TestAssert.ExpectedError('Cannot perform write operations in read-only mode');
+        LibraryAssert.ExpectedError('Cannot perform write operations in read-only mode');
     end;
 
     [Test]
@@ -537,7 +538,7 @@ codeunit 50110 "Unit Tests"
 
         // Act & Assert
         asserterror RecordWriter.InsertRecord(RecordReference, true, true);
-        TestAssert.ExpectedError('Cannot perform write operations in read-only mode');
+        LibraryAssert.ExpectedError('Cannot perform write operations in read-only mode');
     end;
 
     [Test]
@@ -553,7 +554,7 @@ codeunit 50110 "Unit Tests"
 
         // Act & Assert
         asserterror RecordWriter.DeleteRecord(RecordReference, true, true);
-        TestAssert.ExpectedError('Cannot perform write operations in read-only mode');
+        LibraryAssert.ExpectedError('Cannot perform write operations in read-only mode');
     end;
 
     #endregion

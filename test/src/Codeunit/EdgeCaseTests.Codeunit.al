@@ -1,19 +1,20 @@
 namespace SamueleCelebron.ObjectLauncher;
 
 using System.Reflection;
+using System.TestLibraries.Utilities;
 
 /// <summary>
 /// Edge case, boundary, and error condition tests for AL Objects Launcher.
 /// Tests boundaries (0, max, negative), nulls, invalid data, error conditions, and edge cases.
 /// Test ID Range: 50140
 /// </summary>
-codeunit 50140 "Edge Case Tests"
+codeunit 50140 "Obj. Launcher Edge Case Tests"
 {
     Subtype = Test;
     TestPermissions = NonRestrictive;
 
     var
-        TestAssert: Codeunit "Test Assert";
+        LibraryAssert: Codeunit "Library Assert";
 
     #region TableDataManager - Boundary Conditions
 
@@ -31,8 +32,8 @@ codeunit 50140 "Edge Case Tests"
         TableDataManager.LoadRecordValues(0, ValueArray, KeyValueArray);
 
         // Assert - Should return empty arrays without crashing
-        TestAssert.AreEqual('', ValueArray[1], 'ValueArray[1] should be empty for row 0');
-        TestAssert.AreEqual('', KeyValueArray[1], 'KeyValueArray[1] should be empty for row 0');
+        LibraryAssert.AreEqual('', ValueArray[1], 'ValueArray[1] should be empty for row 0');
+        LibraryAssert.AreEqual('', KeyValueArray[1], 'KeyValueArray[1] should be empty for row 0');
     end;
 
     [Test]
@@ -49,9 +50,9 @@ codeunit 50140 "Edge Case Tests"
         TableDataManager.LoadRecordValues(999999, ValueArray, KeyValueArray);
 
         // Assert - Should return empty arrays without crashing
-        TestAssert.AreEqual('', ValueArray[1], 'ValueArray[1] should be empty for non-existent row');
-        TestAssert.AreEqual('', ValueArray[10], 'ValueArray[10] should be empty for non-existent row');
-        TestAssert.AreEqual('', KeyValueArray[1], 'KeyValueArray[1] should be empty for non-existent row');
+        LibraryAssert.AreEqual('', ValueArray[1], 'ValueArray[1] should be empty for non-existent row');
+        LibraryAssert.AreEqual('', ValueArray[10], 'ValueArray[10] should be empty for non-existent row');
+        LibraryAssert.AreEqual('', KeyValueArray[1], 'KeyValueArray[1] should be empty for non-existent row');
     end;
 
     [Test]
@@ -69,7 +70,7 @@ codeunit 50140 "Edge Case Tests"
         Result := TableDataManager.MoveToNextColumnSet(CaptionArray);
 
         // Assert
-        TestAssert.IsFalse(Result, 'MoveToNextColumnSet should return false with empty caption array');
+        LibraryAssert.IsFalse(Result, 'MoveToNextColumnSet should return false with empty caption array');
     end;
 
     [Test]
@@ -93,8 +94,8 @@ codeunit 50140 "Edge Case Tests"
         until not Result;
 
         // Assert - Should have moved at least once and then stopped
-        TestAssert.IsTrue(IterationCount > 0, 'Should have moved to at least one column set');
-        TestAssert.IsFalse(Result, 'Final MoveToNextColumnSet should return false');
+        LibraryAssert.IsTrue(IterationCount > 0, 'Should have moved to at least one column set');
+        LibraryAssert.IsFalse(Result, 'Final MoveToNextColumnSet should return false');
     end;
 
     [Test]
@@ -110,7 +111,7 @@ codeunit 50140 "Edge Case Tests"
         Result := TableDataManager.MoveToPreviousColumnSet();
 
         // Assert
-        TestAssert.IsFalse(Result, 'MoveToPreviousColumnSet should return false at column set 0');
+        LibraryAssert.IsFalse(Result, 'MoveToPreviousColumnSet should return false at column set 0');
     end;
 
     [Test]
@@ -131,7 +132,7 @@ codeunit 50140 "Edge Case Tests"
         Result := TableDataManager.MoveToPreviousColumnSet();
 
         // Assert
-        TestAssert.IsFalse(Result, 'MoveToPreviousColumnSet should return false after MoveToFirstColumnSet');
+        LibraryAssert.IsFalse(Result, 'MoveToPreviousColumnSet should return false after MoveToFirstColumnSet');
     end;
 
     [Test]
@@ -147,7 +148,7 @@ codeunit 50140 "Edge Case Tests"
         Result := TableDataManager.GetControlSetNumber(1);
 
         // Assert
-        TestAssert.AreEqual(1, Result, 'GetControlSetNumber(1) at ColumnSet 0 should return 1');
+        LibraryAssert.AreEqual(1, Result, 'GetControlSetNumber(1) at ColumnSet 0 should return 1');
     end;
 
     [Test]
@@ -163,7 +164,7 @@ codeunit 50140 "Edge Case Tests"
         Result := TableDataManager.GetControlSetNumber(10);
 
         // Assert
-        TestAssert.AreEqual(10, Result, 'GetControlSetNumber(10) at ColumnSet 0 should return 10');
+        LibraryAssert.AreEqual(10, Result, 'GetControlSetNumber(10) at ColumnSet 0 should return 10');
     end;
 
     [Test]
@@ -190,7 +191,7 @@ codeunit 50140 "Edge Case Tests"
 
         // Assert - Should calculate correctly (ColumnSetNumber * 10 + 5)
         // At minimum, if we moved 5 times, should be >= 50 + 5 = 55
-        TestAssert.IsTrue(Result >= 5, 'GetControlSetNumber should calculate correctly for large column set');
+        LibraryAssert.IsTrue(Result >= 5, 'GetControlSetNumber should calculate correctly for large column set');
     end;
 
     [Test]
@@ -207,9 +208,9 @@ codeunit 50140 "Edge Case Tests"
         TableDataManager.LoadFieldCaptions(CaptionArray, KeyCaptionArray);
 
         // Assert - First caption should be populated
-        TestAssert.AreNotEqual('', CaptionArray[1], 'First caption should be populated');
+        LibraryAssert.AreNotEqual('', CaptionArray[1], 'First caption should be populated');
         // Last positions should be empty
-        TestAssert.AreEqual('', CaptionArray[500], 'Last caption position should be empty for small table');
+        LibraryAssert.AreEqual('', CaptionArray[500], 'Last caption position should be empty for small table');
     end;
 
     [Test]
@@ -232,8 +233,8 @@ codeunit 50140 "Edge Case Tests"
         SecondCaption := CaptionArray[1];
 
         // Assert - Second initialize should completely clear first table's state
-        TestAssert.AreNotEqual(FirstCaption, SecondCaption, 'Second initialize should load different table captions');
-        TestAssert.AreEqual(4, TableDataManager.GetTableNumber(), 'Table number should be updated to second table');
+        LibraryAssert.AreNotEqual(FirstCaption, SecondCaption, 'Second initialize should load different table captions');
+        LibraryAssert.AreEqual(4, TableDataManager.GetTableNumber(), 'Table number should be updated to second table');
     end;
 
     [Test]
@@ -249,7 +250,7 @@ codeunit 50140 "Edge Case Tests"
         Result := TableDataManager.GetRecordCount();
 
         // Assert
-        TestAssert.AreEqual(0, Result, 'GetRecordCount should return 0 before LoadRecordSet is called');
+        LibraryAssert.AreEqual(0, Result, 'GetRecordCount should return 0 before LoadRecordSet is called');
     end;
 
     [Test]
@@ -266,7 +267,7 @@ codeunit 50140 "Edge Case Tests"
         Result := TableDataManager.GetRecordReference(99999, RecordReference);
 
         // Assert
-        TestAssert.IsFalse(Result, 'GetRecordReference should return false for non-existent row');
+        LibraryAssert.IsFalse(Result, 'GetRecordReference should return false for non-existent row');
     end;
 
     #endregion
@@ -282,7 +283,7 @@ codeunit 50140 "Edge Case Tests"
 
         // Act & Assert
         asserterror FieldValueHandler.ValidateFieldEditable(18, 60);
-        TestAssert.ExpectedError('is a FlowField and cannot be edited directly');
+        LibraryAssert.ExpectedError('is a FlowField and cannot be edited directly');
     end;
 
     [Test]
@@ -299,7 +300,7 @@ codeunit 50140 "Edge Case Tests"
 
         // Act & Assert
         asserterror FieldValueHandler.ValidateFieldEditable(18, FieldRecord."No.");
-        TestAssert.ExpectedError('is disabled and cannot be edited');
+        LibraryAssert.ExpectedError('is disabled and cannot be edited');
     end;
 
     [Test]
@@ -312,7 +313,7 @@ codeunit 50140 "Edge Case Tests"
         Result := FieldValueHandler.EvaluateBooleanText('');
 
         // Assert
-        TestAssert.IsFalse(Result, 'Empty string should evaluate to false');
+        LibraryAssert.IsFalse(Result, 'Empty string should evaluate to false');
     end;
 
     [Test]
@@ -325,7 +326,7 @@ codeunit 50140 "Edge Case Tests"
         Result := FieldValueHandler.EvaluateBooleanText('Yes');
 
         // Assert
-        TestAssert.IsTrue(Result, '"Yes" should evaluate to true');
+        LibraryAssert.IsTrue(Result, '"Yes" should evaluate to true');
     end;
 
     [Test]
@@ -338,7 +339,7 @@ codeunit 50140 "Edge Case Tests"
         Result := FieldValueHandler.EvaluateBooleanText('No');
 
         // Assert
-        TestAssert.IsFalse(Result, '"No" should evaluate to false');
+        LibraryAssert.IsFalse(Result, '"No" should evaluate to false');
     end;
 
     [Test]
@@ -354,7 +355,7 @@ codeunit 50140 "Edge Case Tests"
         Result := FieldValueHandler.HasTableRelation(18, 2, TableRelationsMetadata);
 
         // Assert
-        TestAssert.IsFalse(Result, 'HasTableRelation should return false for field with no relation');
+        LibraryAssert.IsFalse(Result, 'HasTableRelation should return false for field with no relation');
     end;
 
     [Test]
@@ -370,7 +371,7 @@ codeunit 50140 "Edge Case Tests"
         Result := FieldValueHandler.HasTableRelation(18, 21, TableRelationsMetadata);
 
         // Assert
-        TestAssert.IsTrue(Result, 'HasTableRelation should return true for field with relation');
+        LibraryAssert.IsTrue(Result, 'HasTableRelation should return true for field with relation');
     end;
 
     #endregion
@@ -384,7 +385,7 @@ codeunit 50140 "Edge Case Tests"
     begin
         // Act & Assert
         asserterror RecordWriter.GuardReadOnlyMode(true);
-        TestAssert.ExpectedError('Cannot perform write operations in read-only mode');
+        LibraryAssert.ExpectedError('Cannot perform write operations in read-only mode');
     end;
 
     [Test]
@@ -396,7 +397,7 @@ codeunit 50140 "Edge Case Tests"
         RecordWriter.GuardReadOnlyMode(false);
 
         // Assert - If we reach here, no error was raised (test passes)
-        TestAssert.IsTrue(true, 'GuardReadOnlyMode(false) should not raise error');
+        LibraryAssert.IsTrue(true, 'GuardReadOnlyMode(false) should not raise error');
     end;
 
     [Test]
@@ -412,7 +413,7 @@ codeunit 50140 "Edge Case Tests"
 
         // Act & Assert - Should error before attempting DB modification
         asserterror RecordWriter.ModifyRecord(RecordReference, true, true);
-        TestAssert.ExpectedError('Cannot perform write operations in read-only mode');
+        LibraryAssert.ExpectedError('Cannot perform write operations in read-only mode');
     end;
 
     [Test]
@@ -428,7 +429,7 @@ codeunit 50140 "Edge Case Tests"
 
         // Act & Assert - Should error before attempting DB insert
         asserterror RecordWriter.InsertRecord(RecordReference, true, true);
-        TestAssert.ExpectedError('Cannot perform write operations in read-only mode');
+        LibraryAssert.ExpectedError('Cannot perform write operations in read-only mode');
     end;
 
     [Test]
@@ -444,7 +445,7 @@ codeunit 50140 "Edge Case Tests"
 
         // Act & Assert - Should error before attempting DB delete
         asserterror RecordWriter.DeleteRecord(RecordReference, true, true);
-        TestAssert.ExpectedError('Cannot perform write operations in read-only mode');
+        LibraryAssert.ExpectedError('Cannot perform write operations in read-only mode');
     end;
 
     [Test]
@@ -458,7 +459,7 @@ codeunit 50140 "Edge Case Tests"
 
         // Act & Assert - Should error immediately, before showing confirm dialog
         asserterror RecordWriter.DeleteAllRecords(RecordReference, true, true);
-        TestAssert.ExpectedError('Cannot perform write operations in read-only mode');
+        LibraryAssert.ExpectedError('Cannot perform write operations in read-only mode');
     end;
 
     #endregion
@@ -476,7 +477,7 @@ codeunit 50140 "Edge Case Tests"
 
         // Act & Assert - Should raise error when no records loaded
         asserterror DataExportManager.ExportTableToExcel(TableDataManager);
-        TestAssert.ExpectedError('There are no records to export');
+        LibraryAssert.ExpectedError('There are no records to export');
     end;
 
     #endregion
@@ -492,7 +493,7 @@ codeunit 50140 "Edge Case Tests"
         TableDataManager.Initialize(17, CompanyName); // G/L Entry
 
         // Assert
-        TestAssert.IsTrue(TableDataManager.IsSensitiveTable(), 'Table 17 (G/L Entry) should be sensitive');
+        LibraryAssert.IsTrue(TableDataManager.IsSensitiveTable(), 'Table 17 (G/L Entry) should be sensitive');
     end;
 
     [Test]
@@ -504,7 +505,7 @@ codeunit 50140 "Edge Case Tests"
         TableDataManager.Initialize(21, CompanyName); // Cust. Ledger Entry
 
         // Assert
-        TestAssert.IsTrue(TableDataManager.IsSensitiveTable(), 'Table 21 (Cust. Ledger Entry) should be sensitive');
+        LibraryAssert.IsTrue(TableDataManager.IsSensitiveTable(), 'Table 21 (Cust. Ledger Entry) should be sensitive');
     end;
 
     [Test]
@@ -516,7 +517,7 @@ codeunit 50140 "Edge Case Tests"
         TableDataManager.Initialize(25, CompanyName); // Vendor Ledger Entry
 
         // Assert
-        TestAssert.IsTrue(TableDataManager.IsSensitiveTable(), 'Table 25 (Vendor Ledger Entry) should be sensitive');
+        LibraryAssert.IsTrue(TableDataManager.IsSensitiveTable(), 'Table 25 (Vendor Ledger Entry) should be sensitive');
     end;
 
     [Test]
@@ -528,7 +529,7 @@ codeunit 50140 "Edge Case Tests"
         TableDataManager.Initialize(32, CompanyName); // Item Ledger Entry
 
         // Assert
-        TestAssert.IsTrue(TableDataManager.IsSensitiveTable(), 'Table 32 (Item Ledger Entry) should be sensitive');
+        LibraryAssert.IsTrue(TableDataManager.IsSensitiveTable(), 'Table 32 (Item Ledger Entry) should be sensitive');
     end;
 
     [Test]
@@ -540,7 +541,7 @@ codeunit 50140 "Edge Case Tests"
         TableDataManager.Initialize(112, CompanyName); // Sales Invoice Header
 
         // Assert
-        TestAssert.IsTrue(TableDataManager.IsSensitiveTable(), 'Table 112 (Sales Invoice Header) should be sensitive');
+        LibraryAssert.IsTrue(TableDataManager.IsSensitiveTable(), 'Table 112 (Sales Invoice Header) should be sensitive');
     end;
 
     [Test]
@@ -552,7 +553,7 @@ codeunit 50140 "Edge Case Tests"
         TableDataManager.Initialize(254, CompanyName); // VAT Entry
 
         // Assert
-        TestAssert.IsTrue(TableDataManager.IsSensitiveTable(), 'Table 254 (VAT Entry) should be sensitive');
+        LibraryAssert.IsTrue(TableDataManager.IsSensitiveTable(), 'Table 254 (VAT Entry) should be sensitive');
     end;
 
     [Test]
@@ -564,7 +565,7 @@ codeunit 50140 "Edge Case Tests"
         TableDataManager.Initialize(5802, CompanyName); // Value Entry
 
         // Assert
-        TestAssert.IsTrue(TableDataManager.IsSensitiveTable(), 'Table 5802 (Value Entry) should be sensitive');
+        LibraryAssert.IsTrue(TableDataManager.IsSensitiveTable(), 'Table 5802 (Value Entry) should be sensitive');
     end;
 
     [Test]
@@ -576,7 +577,7 @@ codeunit 50140 "Edge Case Tests"
         TableDataManager.Initialize(18, CompanyName); // Customer
 
         // Assert
-        TestAssert.IsFalse(TableDataManager.IsSensitiveTable(), 'Table 18 (Customer) should NOT be sensitive');
+        LibraryAssert.IsFalse(TableDataManager.IsSensitiveTable(), 'Table 18 (Customer) should NOT be sensitive');
     end;
 
     [Test]
@@ -588,7 +589,7 @@ codeunit 50140 "Edge Case Tests"
         TableDataManager.Initialize(27, CompanyName); // Item
 
         // Assert
-        TestAssert.IsFalse(TableDataManager.IsSensitiveTable(), 'Table 27 (Item) should NOT be sensitive');
+        LibraryAssert.IsFalse(TableDataManager.IsSensitiveTable(), 'Table 27 (Item) should NOT be sensitive');
     end;
 
     [Test]
@@ -600,7 +601,7 @@ codeunit 50140 "Edge Case Tests"
         TableDataManager.Initialize(13, CompanyName); // Salesperson/Purchaser
 
         // Assert
-        TestAssert.IsFalse(TableDataManager.IsSensitiveTable(), 'Table 13 (Salesperson/Purchaser) should NOT be sensitive');
+        LibraryAssert.IsFalse(TableDataManager.IsSensitiveTable(), 'Table 13 (Salesperson/Purchaser) should NOT be sensitive');
     end;
 
     #endregion
@@ -643,7 +644,7 @@ codeunit 50140 "Edge Case Tests"
         Result := TableDataManager.GetRecordId(1, ResultRecordId);
 
         // Assert
-        TestAssert.IsFalse(Result, 'GetRecordId should return false after RemoveRecordId');
+        LibraryAssert.IsFalse(Result, 'GetRecordId should return false after RemoveRecordId');
     end;
 
     [Test]
@@ -676,8 +677,8 @@ codeunit 50140 "Edge Case Tests"
         Result := TableDataManager.GetRecordId(1, RetrievedRecordId);
 
         // Assert
-        TestAssert.IsTrue(Result, 'GetRecordId should return true after UpdateRecordId');
-        TestAssert.AreEqual(Format(SecondRecordId), Format(RetrievedRecordId), 'Retrieved RecordId should be the updated value');
+        LibraryAssert.IsTrue(Result, 'GetRecordId should return true after UpdateRecordId');
+        LibraryAssert.AreEqual(Format(SecondRecordId), Format(RetrievedRecordId), 'Retrieved RecordId should be the updated value');
     end;
 
     [Test]
@@ -694,7 +695,7 @@ codeunit 50140 "Edge Case Tests"
         Result := TableDataManager.GetRecordId(12345, ResultRecordId);
 
         // Assert
-        TestAssert.IsFalse(Result, 'GetRecordId should return false for row not in dictionary');
+        LibraryAssert.IsFalse(Result, 'GetRecordId should return false for row not in dictionary');
     end;
 
     #endregion
