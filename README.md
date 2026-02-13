@@ -1,56 +1,49 @@
-# AL Objects Launcher
+<p align="center">
+  <img src="Logo/Logo.png" alt="AL Objects Launcher" width="128">
+</p>
 
-A developer utility extension for Microsoft Dynamics 365 Business Central that provides a searchable launcher for all installed AL objects and a generic table data editor with full CRUD support.
+<h1 align="center">AL Objects Launcher</h1>
+
+<p align="center">
+  A developer toolkit for Business Central — quickly find and run any AL object, and edit table data on the fly.
+</p>
+
+<p align="center">
+  <a href="#installation">Installation</a> &middot;
+  <a href="#features">Features</a> &middot;
+  <a href="#security">Security</a> &middot;
+  <a href="LICENSE">License</a>
+</p>
+
+---
+
+## Why?
+
+Working in Business Central, you often need to look up an object, run a page, or peek at table data. Normally that means navigating menus, writing temporary code, or switching tools.
+
+**AL Objects Launcher** gives you a single search page to find and run any installed AL object, plus a built-in table editor that lets you view and modify data in any table — no extra setup required.
 
 ## Features
 
-### AL Objects Launcher (Page 50100)
-- Browse all installed AL objects (Tables, Pages, Reports, Codeunits) across all extensions
-- Filter by object type, name, or source extension
-- Launch any object directly from the list
-- Open the Table Data Editor for any table with one click
+### Object Launcher
 
-### Table Data Editor (Page 50102)
-- Open **any** table by number with full read/write access
-- Dynamic column display (up to 500 fields) with column set navigation
-- Primary key fields displayed in a fixed header section
-- Type-aware field editing with validation and lookups (Option, Boolean, Date, Relation)
-- Record insert, modify, delete, and primary key rename support
-- Cross-company data access
-- Excel export with correct cell types (Number, Date, Text)
-- Custom filtering, field selection, and key sorting
-- Read-only mode toggle and trigger execution control
-- Sensitive table detection with confirmation dialogs for posted/ledger tables
+Search across every installed extension and jump straight to any Table, Page, Report, or Codeunit. Filter by type, name, or extension, and launch it with one click.
 
-## Architecture
+### Table Data Editor
 
-The extension follows a multi-codeunit architecture with clear separation of concerns:
+Open any table by number and work with its data directly:
 
-| Object | ID | Purpose |
-|---|---|---|
-| AL Objects Launcher | 50100 | Page - Searchable object browser |
-| Sorting Keys | 50101 | Page - Key selection for Table Data Editor |
-| Table Data Editor | 50102 | Page - Generic table data editor UI |
-| Database Operation Type | 50100 | Enum - Insert/Modify/Delete/Rename |
-| Table Data Manager | 50100 | Codeunit - Record loading, field metadata, navigation |
-| Field Value Handler | 50101 | Codeunit - Type-aware parsing, validation, lookups |
-| Record Writer | 50102 | Codeunit - Database mutations with integration events |
-| Data Export Manager | 50103 | Codeunit - Excel export with field type caching |
-| AL Objects Launcher | 50100 | PermissionSet - Execute permissions for all objects |
+- **Read & write** — Insert, modify, delete, and rename records
+- **Dynamic columns** — Displays up to 500 fields with column set navigation
+- **Smart editing** — Type-aware input with validation and lookups for Options, Booleans, Dates, and Relations
+- **Cross-company** — Switch company context without leaving the page
+- **Excel export** — Export with correct cell types (numbers, dates, text)
+- **Safety first** — Sensitive tables (ledger entries, posted documents) trigger a confirmation before loading
+- **Read-only mode** — Toggle read-only when you just need to browse
 
 ### Extensibility
 
-The `Record Writer` codeunit publishes integration events before every database operation:
-- `OnBeforeGenericDatabaseWrite` - Fired before Insert, Modify, or Delete
-- `OnBeforeGenericDatabaseRename` - Fired before record rename
-
-Subscribe to these events to add custom validation, logging, or audit trail logic.
-
-## Requirements
-
-- Business Central runtime 15.0+
-- Application version 26.0.0.0+
-- Target: Cloud
+The extension publishes integration events before every database operation, so you can hook in custom validation, logging, or audit trail logic.
 
 ## Installation
 
@@ -58,42 +51,16 @@ Subscribe to these events to add custom validation, logging, or audit trail logi
 2. Open the `app/` folder in VS Code with the AL Language extension
 3. Download symbols and publish to your Business Central environment
 
-## Project Structure
+> Requires Business Central runtime 15.0+ and application 26.0+.
 
-```
-AL-Objects-Launcher/
-  app/                          # Main extension
-    app.json                    # Extension manifest (v2.0.0)
-    src/
-      Codeunit/
-        DataExportManager.Codeunit.al
-        FieldValueHandler.Codeunit.al
-        RecordWriter.Codeunit.al
-        TableDataManager.Codeunit.al
-      Enum/
-        DatabaseOperationType.Enum.al
-      Page/
-        ALObjectsLauncher.Page.al
-        SortingKeys.Page.al
-        TableDataEditor.Page.al
-      Permission/
-        ALObjectsLauncher.PermissionSet.al
-  test/                         # Test extension (separate app)
-    app.json
-  Logo/
-    Logo.png
-```
+## Security
 
-## Security Notes
-
-The Table Data Editor requires broad table permissions to function as a generic data editor. The page declares RIMD permissions for common posted/ledger tables. Access should be restricted to developers and administrators through the `AL Objects Launcher` permission set.
-
-Sensitive tables (ledger entries, registers, posted documents) are detected automatically and trigger a confirmation dialog before loading.
+The Table Data Editor needs broad table permissions to work as a generic editor. Access is controlled through the **AL Objects Launcher** permission set — assign it only to developers and administrators.
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) for details.
+[MIT](LICENSE)
 
 ## Author
 
-**Samuele Celebron** - [GitHub](https://github.com/samucele)
+**Samuele Celebron** — [GitHub](https://github.com/samucele)
