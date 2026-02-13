@@ -2,6 +2,7 @@ namespace SamueleCelebron.ObjectLauncher;
 
 using System.Utilities;
 using System.Reflection;
+using System.TestLibraries.Utilities;
 using Microsoft.CRM.Team;
 
 /// <summary>
@@ -9,14 +10,14 @@ using Microsoft.CRM.Team;
 /// Tests cross-object interactions, event subscribers, and multi-object workflows.
 /// Codeunit ID: 50120 (Test range 50200-50299).
 /// </summary>
-codeunit 50120 "Integration Tests"
+codeunit 50120 "Obj. Launcher Integ. Tests"
 {
     Subtype = Test;
     TestPermissions = NonRestrictive;
     EventSubscriberInstance = Manual;
 
     var
-        TestAssert: Codeunit "Test Assert";
+        LibraryAssert: Codeunit "Library Assert";
         EventFired: Boolean;
         EventOperationType: Enum "Database Operation Type";
         EventRecordTableNo: Integer;
@@ -37,7 +38,7 @@ codeunit 50120 "Integration Tests"
         TableDataManager.LoadFieldCaptions(CaptionArray, KeyCaptionArray);
 
         // [THEN] The first caption is populated
-        TestAssert.AreNotEqual('', CaptionArray[1], 'First caption should be populated');
+        LibraryAssert.AreNotEqual('', CaptionArray[1], 'First caption should be populated');
     end;
 
     [Test]
@@ -56,7 +57,7 @@ codeunit 50120 "Integration Tests"
         FieldNumber := TableDataManager.GetFieldNumber(1);
 
         // [THEN] A valid field number is returned (greater than 0)
-        TestAssert.IsTrue(FieldNumber > 0, 'Field number should be valid');
+        LibraryAssert.IsTrue(FieldNumber > 0, 'Field number should be valid');
     end;
 
     [Test]
@@ -73,7 +74,7 @@ codeunit 50120 "Integration Tests"
         RecordCount := TableDataManager.LoadRecordSet(TempSourceRecord);
 
         // [THEN] Record count is greater than 0
-        TestAssert.IsTrue(RecordCount > 0, 'Record count should be greater than 0');
+        LibraryAssert.IsTrue(RecordCount > 0, 'Record count should be greater than 0');
     end;
 
     [Test]
@@ -95,7 +96,7 @@ codeunit 50120 "Integration Tests"
         TableDataManager.LoadRecordValues(1, ValueArray, KeyValueArray);
 
         // [THEN] The first value is populated
-        TestAssert.AreNotEqual('', ValueArray[1], 'First value should be populated');
+        LibraryAssert.AreNotEqual('', ValueArray[1], 'First value should be populated');
     end;
 
     [Test]
@@ -112,7 +113,7 @@ codeunit 50120 "Integration Tests"
         TableDataManager.LoadFieldCaptions(CaptionArray, KeyCaptionArray);
 
         // [THEN] Primary key caption array is populated
-        TestAssert.AreNotEqual('', KeyCaptionArray[1], 'Primary key caption should be populated');
+        LibraryAssert.AreNotEqual('', KeyCaptionArray[1], 'Primary key caption should be populated');
     end;
 
     #endregion
@@ -143,7 +144,7 @@ codeunit 50120 "Integration Tests"
 
         // [THEN] The record exists in the database
         SalespersonPurchaser.SetRange(Code, 'TEST001');
-        TestAssert.IsTrue(SalespersonPurchaser.FindFirst(), 'Record should exist after insert');
+        LibraryAssert.IsTrue(SalespersonPurchaser.FindFirst(), 'Record should exist after insert');
     end;
 
     [Test]
@@ -176,7 +177,7 @@ codeunit 50120 "Integration Tests"
 
         // [THEN] The field value has changed in the database
         SalespersonPurchaser.Get('TEST002');
-        TestAssert.AreEqual(NewName, SalespersonPurchaser.Name, 'Name should be modified');
+        LibraryAssert.AreEqual(NewName, SalespersonPurchaser.Name, 'Name should be modified');
     end;
 
     [Test]
@@ -204,7 +205,7 @@ codeunit 50120 "Integration Tests"
 
         // [THEN] The record no longer exists in the database
         SalespersonPurchaser.SetRange(Code, 'TEST003');
-        TestAssert.IsFalse(SalespersonPurchaser.FindFirst(), 'Record should be deleted');
+        LibraryAssert.IsFalse(SalespersonPurchaser.FindFirst(), 'Record should be deleted');
     end;
 
     #endregion
@@ -253,7 +254,7 @@ codeunit 50120 "Integration Tests"
 
         // [THEN] The value is stored in the database
         SalespersonPurchaser.Get('TEST004');
-        TestAssert.AreEqual('Updated Name', SalespersonPurchaser.Name, 'Field value should be updated');
+        LibraryAssert.AreEqual('Updated Name', SalespersonPurchaser.Name, 'Field value should be updated');
     end;
 
     [Test]
@@ -286,7 +287,7 @@ codeunit 50120 "Integration Tests"
 
         // [THEN] A new record is inserted in the database
         SalespersonPurchaser.SetRange(Code, 'NEWSP001');
-        TestAssert.IsTrue(SalespersonPurchaser.FindFirst(), 'New record should be inserted');
+        LibraryAssert.IsTrue(SalespersonPurchaser.FindFirst(), 'New record should be inserted');
     end;
 
     #endregion
@@ -316,9 +317,9 @@ codeunit 50120 "Integration Tests"
 
         // [THEN] The event was fired with Insert operation type
         UnbindSubscription(this);
-        TestAssert.IsTrue(EventFired, 'Event should have fired');
-        TestAssert.AreEqual(Enum::"Database Operation Type"::Insert, EventOperationType, 'Operation type should be Insert');
-        TestAssert.AreEqual(Database::"Salesperson/Purchaser", EventRecordTableNo, 'Table number should match');
+        LibraryAssert.IsTrue(EventFired, 'Event should have fired');
+        LibraryAssert.AreEqual(Enum::"Database Operation Type"::Insert, EventOperationType, 'Operation type should be Insert');
+        LibraryAssert.AreEqual(Database::"Salesperson/Purchaser", EventRecordTableNo, 'Table number should match');
     end;
 
     [Test]
@@ -350,8 +351,8 @@ codeunit 50120 "Integration Tests"
 
         // [THEN] The event was fired with Modify operation type
         UnbindSubscription(this);
-        TestAssert.IsTrue(EventFired, 'Event should have fired');
-        TestAssert.AreEqual(Enum::"Database Operation Type"::Modify, EventOperationType, 'Operation type should be Modify');
+        LibraryAssert.IsTrue(EventFired, 'Event should have fired');
+        LibraryAssert.AreEqual(Enum::"Database Operation Type"::Modify, EventOperationType, 'Operation type should be Modify');
     end;
 
     [Test]
@@ -380,7 +381,7 @@ codeunit 50120 "Integration Tests"
         SalespersonPurchaser.SetRange(Code, 'BLOCK001');
         // Note: In real scenario with IsHandled, record wouldn't be inserted.
         // This test verifies event fires; actual blocking would be in subscriber implementation.
-        TestAssert.IsTrue(EventFired, 'Event should have fired');
+        LibraryAssert.IsTrue(EventFired, 'Event should have fired');
     end;
 
     [Test]
@@ -420,11 +421,11 @@ codeunit 50120 "Integration Tests"
 
         // [THEN] The rename event fired (we track this in our subscriber)
         UnbindSubscription(this);
-        TestAssert.IsTrue(EventFired, 'Rename event should have fired');
+        LibraryAssert.IsTrue(EventFired, 'Rename event should have fired');
 
         // [THEN] The record was renamed
         SalespersonPurchaser.SetRange(Code, 'RENAME02');
-        TestAssert.IsTrue(SalespersonPurchaser.FindFirst(), 'Record should exist with new code');
+        LibraryAssert.IsTrue(SalespersonPurchaser.FindFirst(), 'Record should exist with new code');
     end;
 
     #endregion
@@ -454,7 +455,7 @@ codeunit 50120 "Integration Tests"
         // DataExportManager.ExportTableToExcel(TableDataManager);
 
         // Instead, verify the prerequisite: record count > 0
-        TestAssert.IsTrue(TableDataManager.GetRecordCount() > 0,
+        LibraryAssert.IsTrue(TableDataManager.GetRecordCount() > 0,
             'Export would succeed: records are loaded');
     end;
 

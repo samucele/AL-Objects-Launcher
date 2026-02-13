@@ -16,6 +16,12 @@
       "name": "AL Objects Launcher",
       "publisher": "Samuele Celebron",
       "version": "2.0.0.0"
+    },
+    {
+      "id": "dd0be2ea-f733-4d65-bb34-a28f4624fb14",
+      "name": "Library Assert",
+      "publisher": "Microsoft",
+      "version": "26.5.38752.45346"
     }
   ],
   "screenshots": [],

@@ -1,6 +1,7 @@
 namespace SamueleCelebron.ObjectLauncher;
 
 using System.Utilities;
+using System.TestLibraries.Utilities;
 using Microsoft.CRM.Team;
 
 /// <summary>
@@ -9,13 +10,13 @@ using Microsoft.CRM.Team;
 /// verifying the full interaction between TableDataManager, RecordWriter, and FieldValueHandler.
 /// Test Codeunit ID: 50130
 /// </summary>
-codeunit 50130 "Scenario Tests"
+codeunit 50130 "Obj. Launcher Scenario Tests"
 {
     Subtype = Test;
     TestPermissions = NonRestrictive;
 
     var
-        TestAssert: Codeunit "Test Assert";
+        LibraryAssert: Codeunit "Library Assert";
 
     #region Scenario 1: Browse Any Table (Read-Only Workflow)
 
@@ -43,46 +44,46 @@ codeunit 50130 "Scenario Tests"
         TableDataManager.LoadFieldCaptions(CaptionArray, KeyCaptionArray);
 
         // [THEN] Caption array should have field captions loaded
-        TestAssert.AreNotEqual('', CaptionArray[1], 'First caption should be populated');
-        TestAssert.AreNotEqual('', KeyCaptionArray[1], 'First key caption should be populated');
+        LibraryAssert.AreNotEqual('', CaptionArray[1], 'First caption should be populated');
+        LibraryAssert.AreNotEqual('', KeyCaptionArray[1], 'First key caption should be populated');
 
         // [WHEN] Load record set
         RecordCount := TableDataManager.LoadRecordSet(TempSourceRecord);
 
         // [THEN] Records should be loaded
-        TestAssert.IsTrue(RecordCount >= 0, 'Record count should be non-negative');
-        TestAssert.AreEqual(RecordCount, TempSourceRecord.Count, 'Source record count matches TDM count');
+        LibraryAssert.IsTrue(RecordCount >= 0, 'Record count should be non-negative');
+        LibraryAssert.AreEqual(RecordCount, TempSourceRecord.Count, 'Source record count matches TDM count');
 
         // [WHEN] Load record values for first row (if records exist)
         if RecordCount > 0 then begin
             TableDataManager.LoadRecordValues(1, ValueArray, KeyValueArray);
 
             // [THEN] Values should be populated
-            TestAssert.IsTrue(ValueArray[1] <> '', 'First field value should be populated');
+            LibraryAssert.IsTrue(ValueArray[1] <> '', 'First field value should be populated');
         end;
 
         // [WHEN] Navigate to next column set
         // [THEN] Should succeed because Customer table has many fields
-        TestAssert.IsTrue(TableDataManager.MoveToNextColumnSet(CaptionArray), 'Should move to next column set');
-        TestAssert.AreEqual(11, TableDataManager.GetControlSetNumber(1), 'First control in set 1 should be column 11');
+        LibraryAssert.IsTrue(TableDataManager.MoveToNextColumnSet(CaptionArray), 'Should move to next column set');
+        LibraryAssert.AreEqual(11, TableDataManager.GetControlSetNumber(1), 'First control in set 1 should be column 11');
 
         // [WHEN] Move to previous column set
         // [THEN] Should return to first set
-        TestAssert.IsTrue(TableDataManager.MoveToPreviousColumnSet(), 'Should move back to previous column set');
-        TestAssert.AreEqual(1, TableDataManager.GetControlSetNumber(1), 'Should be back at column 1');
+        LibraryAssert.IsTrue(TableDataManager.MoveToPreviousColumnSet(), 'Should move back to previous column set');
+        LibraryAssert.AreEqual(1, TableDataManager.GetControlSetNumber(1), 'Should be back at column 1');
 
         // [WHEN] Navigate to last and first column sets
         TableDataManager.MoveToLastColumnSet();
-        TestAssert.IsTrue(TableDataManager.GetControlSetNumber(1) > 10, 'Should be at a later column set');
+        LibraryAssert.IsTrue(TableDataManager.GetControlSetNumber(1) > 10, 'Should be at a later column set');
 
         TableDataManager.MoveToFirstColumnSet();
-        TestAssert.AreEqual(1, TableDataManager.GetControlSetNumber(1), 'Should be back at first column set');
+        LibraryAssert.AreEqual(1, TableDataManager.GetControlSetNumber(1), 'Should be back at first column set');
 
         // [WHEN] Get table caption
         TableCaption := TableDataManager.GetTableCaption();
 
         // [THEN] Caption should be 'Customer'
-        TestAssert.AreEqual('Customer', TableCaption, 'Table caption should be Customer');
+        LibraryAssert.AreEqual('Customer', TableCaption, 'Table caption should be Customer');
     end;
 
     #endregion
@@ -136,26 +137,26 @@ codeunit 50130 "Scenario Tests"
         // [THEN] Record count should increase
         TableDataManager.CountRecords();
         NewRecordCount := TableDataManager.GetRecordCount();
-        TestAssert.AreEqual(InitialCount + 1, NewRecordCount, 'Record count should increase by 1 after insert');
+        LibraryAssert.AreEqual(InitialCount + 1, NewRecordCount, 'Record count should increase by 1 after insert');
 
         // [THEN] Verify record exists in database
-        TestAssert.IsTrue(SalespersonPurchaser.Get(TestCode), 'Record should exist in database');
-        TestAssert.AreEqual(TestName, SalespersonPurchaser.Name, 'Name should match');
+        LibraryAssert.IsTrue(SalespersonPurchaser.Get(TestCode), 'Record should exist in database');
+        LibraryAssert.AreEqual(TestName, SalespersonPurchaser.Name, 'Name should match');
 
         // [WHEN] Modify the record
         RecordReference.Close();
-        TestAssert.IsTrue(TableDataManager.GetRecordReference(NewRowNumber, RecordReference), 'Should retrieve record reference');
+        LibraryAssert.IsTrue(TableDataManager.GetRecordReference(NewRowNumber, RecordReference), 'Should retrieve record reference');
         FieldReference := RecordReference.Field(2); // Name field
         FieldReference.Value := 'Modified Name';
         RecordWriter.ModifyRecord(RecordReference, TableDataManager.GetRunTriggers(), TableDataManager.GetReadOnlyMode());
 
         // [THEN] Verify modification persisted
         SalespersonPurchaser.Get(TestCode);
-        TestAssert.AreEqual('Modified Name', SalespersonPurchaser.Name, 'Name should be modified');
+        LibraryAssert.AreEqual('Modified Name', SalespersonPurchaser.Name, 'Name should be modified');
 
         // [WHEN] Delete the record
         RecordReference.Close();
-        TestAssert.IsTrue(TableDataManager.GetRecordReference(NewRowNumber, RecordReference), 'Should retrieve record reference for delete');
+        LibraryAssert.IsTrue(TableDataManager.GetRecordReference(NewRowNumber, RecordReference), 'Should retrieve record reference for delete');
         RecordWriter.DeleteRecord(RecordReference, TableDataManager.GetRunTriggers(), TableDataManager.GetReadOnlyMode());
 
         // [GIVEN] Remove from dictionary
@@ -163,8 +164,8 @@ codeunit 50130 "Scenario Tests"
 
         // [THEN] Verify record deleted
         TableDataManager.CountRecords();
-        TestAssert.AreEqual(InitialCount, TableDataManager.GetRecordCount(), 'Record count should return to initial value');
-        TestAssert.IsFalse(SalespersonPurchaser.Get(TestCode), 'Record should not exist in database');
+        LibraryAssert.AreEqual(InitialCount, TableDataManager.GetRecordCount(), 'Record count should return to initial value');
+        LibraryAssert.IsFalse(SalespersonPurchaser.Get(TestCode), 'Record should not exist in database');
     end;
 
     #endregion
@@ -192,7 +193,7 @@ codeunit 50130 "Scenario Tests"
     begin
         // [GIVEN] A Table Data Manager in default ReadOnlyMode (true)
         TableDataManager.Initialize(13, CompanyName());
-        TestAssert.IsTrue(TableDataManager.GetReadOnlyMode(), 'Should default to ReadOnlyMode');
+        LibraryAssert.IsTrue(TableDataManager.GetReadOnlyMode(), 'Should default to ReadOnlyMode');
 
         // [GIVEN] A test salesperson record exists in the database
         TestCode := CopyStr('READONLY-' + Format(CreateGuid()), 1, 20);
@@ -211,7 +212,7 @@ codeunit 50130 "Scenario Tests"
         InsertErrorOccurred := GetLastErrorText() <> '';
 
         // [THEN] Insert should fail
-        TestAssert.IsTrue(InsertErrorOccurred, 'Insert should fail in ReadOnlyMode');
+        LibraryAssert.IsTrue(InsertErrorOccurred, 'Insert should fail in ReadOnlyMode');
         ClearLastError();
 
         // [GIVEN] Re-insert the test record (asserterror rolled back the previous insert)
@@ -232,7 +233,7 @@ codeunit 50130 "Scenario Tests"
         ModifyErrorOccurred := GetLastErrorText() <> '';
 
         // [THEN] Modify should fail
-        TestAssert.IsTrue(ModifyErrorOccurred, 'Modify should fail in ReadOnlyMode');
+        LibraryAssert.IsTrue(ModifyErrorOccurred, 'Modify should fail in ReadOnlyMode');
         ClearLastError();
 
         // [GIVEN] Re-insert the test record (asserterror rolled back again)
@@ -251,7 +252,7 @@ codeunit 50130 "Scenario Tests"
         DeleteErrorOccurred := GetLastErrorText() <> '';
 
         // [THEN] Delete should fail
-        TestAssert.IsTrue(DeleteErrorOccurred, 'Delete should fail in ReadOnlyMode');
+        LibraryAssert.IsTrue(DeleteErrorOccurred, 'Delete should fail in ReadOnlyMode');
         ClearLastError();
 
         // [WHEN] Set ReadOnlyMode to false
@@ -266,7 +267,7 @@ codeunit 50130 "Scenario Tests"
         FieldReference.Value := 'Write Mode Test';
 
         RecordWriter.InsertRecord(RecordReference, true, TableDataManager.GetReadOnlyMode());
-        TestAssert.IsTrue(RecordReference.Get(RecordReference.RecordId), 'Record should be inserted when ReadOnlyMode is false');
+        LibraryAssert.IsTrue(RecordReference.Get(RecordReference.RecordId), 'Record should be inserted when ReadOnlyMode is false');
     end;
 
     #endregion
@@ -299,24 +300,24 @@ codeunit 50130 "Scenario Tests"
         while (FieldCount < ArrayLen(CaptionArray)) and (CaptionArray[FieldCount + 1] <> '') do
             FieldCount += 1;
 
-        TestAssert.IsTrue(FieldCount > 10, 'Customer table should have more than 10 fields for pagination test');
+        LibraryAssert.IsTrue(FieldCount > 10, 'Customer table should have more than 10 fields for pagination test');
 
         // [WHEN] Get control set number at column set 0
-        TestAssert.AreEqual(1, TableDataManager.GetControlSetNumber(1), 'Column 1 in set 0 should be position 1');
-        TestAssert.AreEqual(5, TableDataManager.GetControlSetNumber(5), 'Column 5 in set 0 should be position 5');
+        LibraryAssert.AreEqual(1, TableDataManager.GetControlSetNumber(1), 'Column 1 in set 0 should be position 1');
+        LibraryAssert.AreEqual(5, TableDataManager.GetControlSetNumber(5), 'Column 5 in set 0 should be position 5');
 
         // [WHEN] Move to next column set
         HasMoreColumns := TableDataManager.MoveToNextColumnSet(CaptionArray);
-        TestAssert.IsTrue(HasMoreColumns, 'Should successfully move to next column set');
+        LibraryAssert.IsTrue(HasMoreColumns, 'Should successfully move to next column set');
 
         // [THEN] Control set numbers should reflect new position
-        TestAssert.AreEqual(11, TableDataManager.GetControlSetNumber(1), 'Column 1 in set 1 should be position 11');
-        TestAssert.AreEqual(15, TableDataManager.GetControlSetNumber(5), 'Column 5 in set 1 should be position 15');
+        LibraryAssert.AreEqual(11, TableDataManager.GetControlSetNumber(1), 'Column 1 in set 1 should be position 11');
+        LibraryAssert.AreEqual(15, TableDataManager.GetControlSetNumber(5), 'Column 5 in set 1 should be position 15');
 
         // [WHEN] Move to next column set again
         HasMoreColumns := TableDataManager.MoveToNextColumnSet(CaptionArray);
         if HasMoreColumns then
-            TestAssert.AreEqual(21, TableDataManager.GetControlSetNumber(1), 'Column 1 in set 2 should be position 21');
+            LibraryAssert.AreEqual(21, TableDataManager.GetControlSetNumber(1), 'Column 1 in set 2 should be position 21');
 
         // [WHEN] Continue moving until no more columns
         ColumnSetNumber := 0;
@@ -327,7 +328,7 @@ codeunit 50130 "Scenario Tests"
         until not HasMoreColumns;
 
         // [THEN] Should eventually return false when at the end
-        TestAssert.IsFalse(HasMoreColumns, 'Should return false when no more column sets available');
+        LibraryAssert.IsFalse(HasMoreColumns, 'Should return false when no more column sets available');
     end;
 
     #endregion
@@ -347,42 +348,42 @@ codeunit 50130 "Scenario Tests"
         // [WHEN] Initialize with G/L Entry (17)
         TableDataManager.Initialize(17, CompanyName());
         // [THEN] Should be sensitive
-        TestAssert.IsTrue(TableDataManager.IsSensitiveTable(), 'G/L Entry should be sensitive');
+        LibraryAssert.IsTrue(TableDataManager.IsSensitiveTable(), 'G/L Entry should be sensitive');
 
         // [WHEN] Initialize with Customer (18)
         TableDataManager.Initialize(18, CompanyName());
         // [THEN] Should not be sensitive
-        TestAssert.IsFalse(TableDataManager.IsSensitiveTable(), 'Customer should not be sensitive');
+        LibraryAssert.IsFalse(TableDataManager.IsSensitiveTable(), 'Customer should not be sensitive');
 
         // [WHEN] Initialize with Cust. Ledger Entry (21)
         TableDataManager.Initialize(21, CompanyName());
         // [THEN] Should be sensitive
-        TestAssert.IsTrue(TableDataManager.IsSensitiveTable(), 'Cust. Ledger Entry should be sensitive');
+        LibraryAssert.IsTrue(TableDataManager.IsSensitiveTable(), 'Cust. Ledger Entry should be sensitive');
 
         // [WHEN] Initialize with Vendor Ledger Entry (25)
         TableDataManager.Initialize(25, CompanyName());
         // [THEN] Should be sensitive
-        TestAssert.IsTrue(TableDataManager.IsSensitiveTable(), 'Vendor Ledger Entry should be sensitive');
+        LibraryAssert.IsTrue(TableDataManager.IsSensitiveTable(), 'Vendor Ledger Entry should be sensitive');
 
         // [WHEN] Initialize with Item Ledger Entry (32)
         TableDataManager.Initialize(32, CompanyName());
         // [THEN] Should be sensitive
-        TestAssert.IsTrue(TableDataManager.IsSensitiveTable(), 'Item Ledger Entry should be sensitive');
+        LibraryAssert.IsTrue(TableDataManager.IsSensitiveTable(), 'Item Ledger Entry should be sensitive');
 
         // [WHEN] Initialize with Sales Invoice Header (112)
         TableDataManager.Initialize(112, CompanyName());
         // [THEN] Should be sensitive
-        TestAssert.IsTrue(TableDataManager.IsSensitiveTable(), 'Sales Invoice Header should be sensitive');
+        LibraryAssert.IsTrue(TableDataManager.IsSensitiveTable(), 'Sales Invoice Header should be sensitive');
 
         // [WHEN] Initialize with VAT Entry (254)
         TableDataManager.Initialize(254, CompanyName());
         // [THEN] Should be sensitive
-        TestAssert.IsTrue(TableDataManager.IsSensitiveTable(), 'VAT Entry should be sensitive');
+        LibraryAssert.IsTrue(TableDataManager.IsSensitiveTable(), 'VAT Entry should be sensitive');
 
         // [WHEN] Initialize with Salesperson/Purchaser (13)
         TableDataManager.Initialize(13, CompanyName());
         // [THEN] Should not be sensitive
-        TestAssert.IsFalse(TableDataManager.IsSensitiveTable(), 'Salesperson/Purchaser should not be sensitive');
+        LibraryAssert.IsFalse(TableDataManager.IsSensitiveTable(), 'Salesperson/Purchaser should not be sensitive');
     end;
 
     #endregion
@@ -416,8 +417,8 @@ codeunit 50130 "Scenario Tests"
         CustomerCaption := TableDataManager.GetTableCaption();
 
         // [THEN] Verify Customer data loaded
-        TestAssert.AreEqual('Customer', CustomerCaption, 'First table should be Customer');
-        TestAssert.AreNotEqual('', CustomerFirstFieldCaption, 'Customer should have field captions');
+        LibraryAssert.AreEqual('Customer', CustomerCaption, 'First table should be Customer');
+        LibraryAssert.AreNotEqual('', CustomerFirstFieldCaption, 'Customer should have field captions');
 
         // [WHEN] Re-initialize with Item table (27)
         TableDataManager.Initialize(27, CompanyName());
@@ -427,21 +428,21 @@ codeunit 50130 "Scenario Tests"
         ItemCaption := TableDataManager.GetTableCaption();
 
         // [THEN] Verify Item data loaded and Customer state cleared
-        TestAssert.AreEqual('Item', ItemCaption, 'Second table should be Item');
-        TestAssert.AreNotEqual('', ItemFirstFieldCaption, 'Item should have field captions');
-        TestAssert.AreNotEqual(CustomerFirstFieldCaption, ItemFirstFieldCaption, 'Second field captions should differ between tables');
+        LibraryAssert.AreEqual('Item', ItemCaption, 'Second table should be Item');
+        LibraryAssert.AreNotEqual('', ItemFirstFieldCaption, 'Item should have field captions');
+        LibraryAssert.AreNotEqual(CustomerFirstFieldCaption, ItemFirstFieldCaption, 'Second field captions should differ between tables');
 
         // [THEN] Record counts should reflect different tables
         // (They may be equal by coincidence, but state should be independent)
-        TestAssert.AreEqual(27, TableDataManager.GetTableNumber(), 'Table number should be Item (27)');
+        LibraryAssert.AreEqual(27, TableDataManager.GetTableNumber(), 'Table number should be Item (27)');
 
         // [WHEN] Switch back to Customer (18)
         TableDataManager.Initialize(18, CompanyName());
         CustomerCaption := TableDataManager.GetTableCaption();
 
         // [THEN] Verify Customer table loaded again
-        TestAssert.AreEqual('Customer', CustomerCaption, 'Should be back to Customer');
-        TestAssert.AreEqual(18, TableDataManager.GetTableNumber(), 'Table number should be Customer (18)');
+        LibraryAssert.AreEqual('Customer', CustomerCaption, 'Should be back to Customer');
+        LibraryAssert.AreEqual(18, TableDataManager.GetTableNumber(), 'Table number should be Customer (18)');
     end;
 
     #endregion
@@ -462,24 +463,24 @@ codeunit 50130 "Scenario Tests"
         TableDataManager.Initialize(13, CompanyName());
 
         // [THEN] Default values should be set
-        TestAssert.IsTrue(TableDataManager.GetReadOnlyMode(), 'Should default to ReadOnlyMode = true');
-        TestAssert.IsTrue(TableDataManager.GetValidateFields(), 'Should default to ValidateFields = true');
-        TestAssert.IsTrue(TableDataManager.GetRunTriggers(), 'Should default to RunTriggers = true');
+        LibraryAssert.IsTrue(TableDataManager.GetReadOnlyMode(), 'Should default to ReadOnlyMode = true');
+        LibraryAssert.IsTrue(TableDataManager.GetValidateFields(), 'Should default to ValidateFields = true');
+        LibraryAssert.IsTrue(TableDataManager.GetRunTriggers(), 'Should default to RunTriggers = true');
 
         // [WHEN] Change ReadOnlyMode to false
         TableDataManager.SetReadOnlyMode(false);
         // [THEN] Getter should reflect the change
-        TestAssert.IsFalse(TableDataManager.GetReadOnlyMode(), 'ReadOnlyMode should be false');
+        LibraryAssert.IsFalse(TableDataManager.GetReadOnlyMode(), 'ReadOnlyMode should be false');
 
         // [WHEN] Change ValidateFields to false
         TableDataManager.SetValidateFields(false);
         // [THEN] Getter should reflect the change
-        TestAssert.IsFalse(TableDataManager.GetValidateFields(), 'ValidateFields should be false');
+        LibraryAssert.IsFalse(TableDataManager.GetValidateFields(), 'ValidateFields should be false');
 
         // [WHEN] Change RunTriggers to false
         TableDataManager.SetRunTriggers(false);
         // [THEN] Getter should reflect the change
-        TestAssert.IsFalse(TableDataManager.GetRunTriggers(), 'RunTriggers should be false');
+        LibraryAssert.IsFalse(TableDataManager.GetRunTriggers(), 'RunTriggers should be false');
 
         // [WHEN] Change back to true
         TableDataManager.SetReadOnlyMode(true);
@@ -487,9 +488,9 @@ codeunit 50130 "Scenario Tests"
         TableDataManager.SetRunTriggers(true);
 
         // [THEN] All should be true again
-        TestAssert.IsTrue(TableDataManager.GetReadOnlyMode(), 'ReadOnlyMode should be true again');
-        TestAssert.IsTrue(TableDataManager.GetValidateFields(), 'ValidateFields should be true again');
-        TestAssert.IsTrue(TableDataManager.GetRunTriggers(), 'RunTriggers should be true again');
+        LibraryAssert.IsTrue(TableDataManager.GetReadOnlyMode(), 'ReadOnlyMode should be true again');
+        LibraryAssert.IsTrue(TableDataManager.GetValidateFields(), 'ValidateFields should be true again');
+        LibraryAssert.IsTrue(TableDataManager.GetRunTriggers(), 'RunTriggers should be true again');
     end;
 
     #endregion
@@ -533,8 +534,8 @@ codeunit 50130 "Scenario Tests"
         TableDataManager.AddRecordId(RowNumber, RecordReference.RecordId);
 
         // [THEN] Should be able to retrieve the RecordId
-        TestAssert.IsTrue(TableDataManager.GetRecordId(RowNumber, RetrievedRecordId), 'Should retrieve RecordId');
-        TestAssert.AreEqual(Format(RecordReference.RecordId), Format(RetrievedRecordId), 'RecordId should match');
+        LibraryAssert.IsTrue(TableDataManager.GetRecordId(RowNumber, RetrievedRecordId), 'Should retrieve RecordId');
+        LibraryAssert.AreEqual(Format(RecordReference.RecordId), Format(RetrievedRecordId), 'RecordId should match');
 
         // [WHEN] Insert second record and update the same row number
         RecordReference.Close();
@@ -546,15 +547,15 @@ codeunit 50130 "Scenario Tests"
         TableDataManager.UpdateRecordId(RowNumber, RecordReference.RecordId);
 
         // [THEN] Should retrieve the updated RecordId
-        TestAssert.IsTrue(TableDataManager.GetRecordId(RowNumber, RetrievedRecordId), 'Should retrieve updated RecordId');
-        TestAssert.AreEqual(Format(RecordReference.RecordId), Format(RetrievedRecordId), 'Updated RecordId should match');
+        LibraryAssert.IsTrue(TableDataManager.GetRecordId(RowNumber, RetrievedRecordId), 'Should retrieve updated RecordId');
+        LibraryAssert.AreEqual(Format(RecordReference.RecordId), Format(RetrievedRecordId), 'Updated RecordId should match');
 
         // [WHEN] Remove the RecordId from dictionary
         TableDataManager.RemoveRecordId(RowNumber);
 
         // [THEN] Should not be able to retrieve it
         Clear(RetrievedRecordId);
-        TestAssert.IsFalse(TableDataManager.GetRecordId(RowNumber, RetrievedRecordId), 'Should not retrieve removed RecordId');
+        LibraryAssert.IsFalse(TableDataManager.GetRecordId(RowNumber, RetrievedRecordId), 'Should not retrieve removed RecordId');
     end;
 
     #endregion
