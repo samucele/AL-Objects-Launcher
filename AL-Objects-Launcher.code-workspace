@@ -1,0 +1,15 @@
+{
+  "folders": [
+    {
+      "path": "app",
+      "name": "AL Objects Launcher"
+    },
+    {
+      "path": "test",
+      "name": "AL Objects Launcher Tests"
+    }
+  ],
+  "settings": {
+    "al.packageCachePath": "../.alpackages"
+  }
+}
