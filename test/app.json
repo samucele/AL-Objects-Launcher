@@ -1,22 +1,29 @@
 {
-  "id": "426b179e-6c73-43b3-afda-a8a6b01a237a",
-  "name": "AL Objects Launcher",
+  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "name": "AL Objects Launcher Tests",
   "publisher": "Samuele Celebron",
-  "version": "24.0.0.0",
-  "brief": "",
+  "version": "2.0.0.0",
+  "brief": "Test suite for AL Objects Launcher extension.",
   "description": "",
   "privacyStatement": "",
   "EULA": "",
   "help": "",
   "url": "",
-  "logo": "./logo/logo.png",
-  "dependencies": [],
+  "logo": "",
+  "dependencies": [
+    {
+      "id": "426b179e-6c73-43b3-afda-a8a6b01a237a",
+      "name": "AL Objects Launcher",
+      "publisher": "Samuele Celebron",
+      "version": "2.0.0.0"
+    }
+  ],
   "screenshots": [],
   "platform": "1.0.0.0",
-  "application": "24.0.0.0",
+  "application": "26.0.0.0",
   "idRanges": [
     {
-      "from": 50100,
+      "from": 50110,
       "to": 50149
     }
   ],
@@ -25,7 +32,7 @@
     "allowDownloadingSource": true,
     "includeSourceInSymbolFile": true
   },
-  "runtime": "13.0",
+  "runtime": "15.0",
   "target": "Cloud",
   "features": [
     "NoImplicitWith",

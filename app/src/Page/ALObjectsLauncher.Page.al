@@ -20,36 +20,36 @@ page 50100 "AL Objects Launcher"
     {
         area(Content)
         {
-            Group(Filters)
+            group(Filters)
             {
-                field(ObjectType; ObjectType)
+                field(ObjectTypeFilter; ObjectTypeFilter)
                 {
                     ApplicationArea = All;
                     Caption = 'Object Type';
-                    ToolTip = 'Specifies the value of the Object Type field.';
+                    ToolTip = 'Select the type of AL object to display in the list. Choose from Table, Page, Report, or Codeunit to filter the visible objects.';
                     trigger OnValidate()
                     begin
-                        FilterType();
+                        ApplyObjectTypeFilter();
                     end;
                 }
             }
-            repeater(GroupName)
+            repeater(ObjectList)
             {
                 field("Object Type"; Rec."Object Type")
                 {
-                    ApplicationArea = all;
-                    ToolTip = 'Specifies the object type.';
+                    ApplicationArea = All;
+                    ToolTip = 'Shows the type of the AL object, such as Table, Page, Report, or Codeunit.';
                     Visible = false;
                 }
                 field("Object ID"; Rec."Object ID")
                 {
-                    ApplicationArea = all;
-                    ToolTip = 'Specifies the object ID.';
+                    ApplicationArea = All;
+                    ToolTip = 'Shows the unique numeric identifier of the AL object.';
                 }
                 field("Object Name"; Rec."Object Name")
                 {
-                    ApplicationArea = all;
-                    ToolTip = 'Specifies the name of the object.';
+                    ApplicationArea = All;
+                    ToolTip = 'Shows the internal name of the AL object. Click to open or run the object directly.';
                     trigger OnDrillDown()
                     begin
                         OpenObject(false);
@@ -57,14 +57,14 @@ page 50100 "AL Objects Launcher"
                 }
                 field("Object Caption"; Rec."Object Caption")
                 {
-                    ApplicationArea = all;
-                    ToolTip = 'Specifies the caption of the object.';
+                    ApplicationArea = All;
+                    ToolTip = 'Shows the translated caption of the AL object as displayed to end users.';
                 }
                 field(AppName; GetAppName())
                 {
-                    ApplicationArea = all;
+                    ApplicationArea = All;
                     Caption = 'App Name';
-                    ToolTip = 'Specifies the value of the App Name field.';
+                    ToolTip = 'Shows the name of the extension (app) that contains this AL object.';
                 }
             }
         }
@@ -80,8 +80,8 @@ page 50100 "AL Objects Launcher"
                 Caption = 'Open';
                 Image = Open;
                 ShortcutKey = Return;
-                ToolTip = 'Executes the Open action.';
-                trigger OnAction();
+                ToolTip = 'Opens or runs the selected AL object. Tables open in the Table Data Editor, pages and reports are launched directly, and codeunits are executed.';
+                trigger OnAction()
                 begin
                     OpenObject(false);
                 end;
@@ -91,28 +91,28 @@ page 50100 "AL Objects Launcher"
                 ApplicationArea = All;
                 Caption = 'Open With Filters';
                 Image = FilterLines;
-                ShortcutKey = Return;
-                ToolTip = 'Executes the Open With Filters action.';
-                trigger OnAction();
+                ToolTip = 'Opens the selected table in the Table Data Editor and immediately displays the filter dialog so you can define which records to load.';
+                trigger OnAction()
                 begin
                     OpenObject(true);
                 end;
             }
             action(Fields)
             {
-                ApplicationArea = all;
+                ApplicationArea = All;
                 Caption = 'Fields';
                 Image = Accounts;
                 RunObject = page "Fields Lookup";
                 RunPageLink = TableNo = field("Object ID");
-                Visible = ObjectType = ObjectType::Table;
+                ToolTip = 'Opens the Fields Lookup page showing all fields defined on the selected table.';
+                Visible = ObjectTypeFilter = ObjectTypeFilter::Table;
             }
             action(PublishedEvents)
             {
-                ApplicationArea = all;
+                ApplicationArea = All;
                 Caption = 'Published Events';
                 Image = "Event";
-
+                ToolTip = 'Shows all published integration and business events for the selected object, including subscriber details.';
                 trigger OnAction()
                 begin
                     LaunchPublishedEvents();
@@ -126,6 +126,9 @@ page 50100 "AL Objects Launcher"
                 actionref(Open_Promoted; Open)
                 {
                 }
+                actionref(OpenWithFilters_Promoted; OpenWithFilters)
+                {
+                }
                 actionref(Fields_Promoted; Fields)
                 {
                 }
@@ -137,8 +140,18 @@ page 50100 "AL Objects Launcher"
     }
 
     trigger OnOpenPage()
+    var
+        InstalledApp: Record "NAV App Installed App";
     begin
-        FilterType();
+        ApplyObjectTypeFilter();
+
+        // Pre-cache app names to avoid per-row queries
+        InstalledApp.SetLoadFields(Name, "Package ID");
+        if InstalledApp.FindSet() then
+            repeat
+                if not AppNameCache.ContainsKey(InstalledApp."Package ID") then
+                    AppNameCache.Add(InstalledApp."Package ID", InstalledApp.Name);
+            until InstalledApp.Next() = 0;
     end;
 
     local procedure OpenObject(WithFilters: Boolean)
@@ -151,60 +164,58 @@ page 50100 "AL Objects Launcher"
             Rec."Object Type"::Page:
                 Page.Run(Rec."Object ID");
             Rec."Object Type"::Report:
-                Report.run(Rec."Object ID");
+                Report.Run(Rec."Object ID");
             Rec."Object Type"::Table, Rec."Object Type"::TableData:
                 begin
-                    TableDataEditor.SetTableID(Rec."Object ID");
+                    TableDataEditor.SetTableNumber(Rec."Object ID");
                     if WithFilters then
-                        TableDataEditor.OpenFilters(true);
+                        TableDataEditor.OpenFilterDialog(true);
                     TableDataEditor.RunModal();
                 end;
         end;
     end;
 
-    local procedure FilterType()
+    local procedure ApplyObjectTypeFilter()
     begin
-        case ObjectType of
-            ObjectType::Table:
+        case ObjectTypeFilter of
+            ObjectTypeFilter::Table:
                 Rec.SetRange("Object Type", Rec."Object Type"::TableData);
-            ObjectType::Page:
+            ObjectTypeFilter::Page:
                 Rec.SetRange("Object Type", Rec."Object Type"::Page);
-            ObjectType::Report:
+            ObjectTypeFilter::Report:
                 Rec.SetRange("Object Type", Rec."Object Type"::Report);
-            ObjectType::Codeunit:
+            ObjectTypeFilter::Codeunit:
                 Rec.SetRange("Object Type", Rec."Object Type"::Codeunit);
         end;
-        if rec.FindFirst() then;
+        if Rec.FindFirst() then;
         CurrPage.Update(false);
     end;
 
     local procedure GetAppName(): Text
-    var
-        NAVAppInstalledApp: Record "NAV App Installed App";
     begin
-        NAVAppInstalledApp.SetRange("Package ID", Rec."App Package ID");
-        if NAVAppInstalledApp.FindFirst() then
-            exit(NAVAppInstalledApp.Name);
+        if AppNameCache.ContainsKey(Rec."App Package ID") then
+            exit(AppNameCache.Get(Rec."App Package ID"));
     end;
 
     local procedure LaunchPublishedEvents()
     var
         EventSubscription: Record "Event Subscription";
     begin
-        case ObjectType of
-            ObjectType::Table:
+        case ObjectTypeFilter of
+            ObjectTypeFilter::Table:
                 EventSubscription.SetRange("Publisher Object Type", EventSubscription."Publisher Object Type"::Table);
-            ObjectType::Page:
+            ObjectTypeFilter::Page:
                 EventSubscription.SetRange("Publisher Object Type", EventSubscription."Publisher Object Type"::Page);
-            ObjectType::Report:
+            ObjectTypeFilter::Report:
                 EventSubscription.SetRange("Publisher Object Type", EventSubscription."Publisher Object Type"::Report);
-            ObjectType::Codeunit:
+            ObjectTypeFilter::Codeunit:
                 EventSubscription.SetRange("Publisher Object Type", EventSubscription."Publisher Object Type"::Codeunit);
         end;
         EventSubscription.SetRange("Publisher Object ID", Rec."Object ID");
-        page.Run(page::"Event Subscriptions", EventSubscription);
+        Page.Run(Page::"Event Subscriptions", EventSubscription);
     end;
 
     var
-        ObjectType: Option Table,Page,Report,Codeunit;
+        AppNameCache: Dictionary of [Guid, Text];
+        ObjectTypeFilter: Option Table,Page,Report,Codeunit;
 }
