@@ -2,18 +2,18 @@
   "id": "426b179e-6c73-43b3-afda-a8a6b01a237a",
   "name": "AL Objects Launcher",
   "publisher": "Samuele Celebron",
-  "version": "24.0.0.0",
-  "brief": "",
-  "description": "",
+  "version": "2.0.0.0",
+  "brief": "Developer utility for browsing AL objects and editing table data generically.",
+  "description": "A powerful developer tool that provides a searchable list of all installed AL objects and a generic table data editor with support for filtering, sorting, Excel export, and cross-company data access.",
   "privacyStatement": "",
   "EULA": "",
   "help": "",
-  "url": "",
-  "logo": "./logo/logo.png",
+  "url": "https://github.com/samucele/AL-Objects-Launcher",
+  "logo": "./Logo/Logo.png",
   "dependencies": [],
   "screenshots": [],
   "platform": "1.0.0.0",
-  "application": "24.0.0.0",
+  "application": "26.0.0.0",
   "idRanges": [
     {
       "from": 50100,
@@ -25,7 +25,7 @@
     "allowDownloadingSource": true,
     "includeSourceInSymbolFile": true
   },
-  "runtime": "13.0",
+  "runtime": "15.0",
   "target": "Cloud",
   "features": [
     "NoImplicitWith",
